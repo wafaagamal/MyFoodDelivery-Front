@@ -259,6 +259,6 @@ export class DeliveryService {
 
   // Update location
   updateLocation(riderId: string, latitude: number, longitude: number): Observable<void> {
-    return this.http.put<void>(`${this.riderApiUrl}/${riderId}/location`, { latitude, longitude });
+    return this.http.patch<void>(`${this.riderApiUrl}/${riderId}/location`, { latitude, longitude });
   }
 }
