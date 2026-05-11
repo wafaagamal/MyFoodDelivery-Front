@@ -1,0 +1,187 @@
+<!-- Order Placed Success Banner -->
+<div class="success-banner" *ngIf="showSuccessBanner">
+  <i class="fas fa-check-circle"></i>
+  <div class="success-text">
+    <strong>Order placed successfully!</strong>
+    <span>We're confirming your order now.</span>
+  </div>
+</div>
+
+<div class="tracking-container" *ngIf="tracking">
+  <!-- Header -->
+  <div class="tracking-header">
+    <button class="back-btn" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="order-info">
+      <span class="order-number">{{ tracking.orderNumber }}</span>
+      <span class="order-status" [ngClass]="getStatusClass(tracking.status)">
+        {{ getStatusText(tracking.status) }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Map -->
+  <div class="map-container">
+    <div id="tracking-map" class="map"></div>
+
+    <!-- ETA Overlay -->
+    <div class="eta-overlay" *ngIf="tracking.etaMinutes">
+      <div class="eta-time">{{ tracking.etaMinutes }} min</div>
+      <div class="eta-text">{{ tracking.etaText || 'Estimated arrival' }}</div>
+    </div>
+
+    <!-- Map legend -->
+    <div class="map-legend">
+      <span class="legend-item" *ngIf="tracking.rider"><span class="dot" style="background:#1565c0"></span> Rider</span>
+      <span class="legend-item"><span class="dot" style="background:#ff5722"></span> Restaurant</span>
+      <span class="legend-item"><span class="dot" style="background:#4caf50"></span> You</span>
+    </div>
+  </div>
+
+  <!-- Rider Info (when assigned) -->
+  <div class="rider-card" *ngIf="tracking.rider">
+    <div class="rider-info">
+      <div class="rider-avatar">
+        <i class="fas fa-motorcycle"></i>
+      </div>
+      <div class="rider-details">
+        <span class="rider-name">{{ tracking.rider.name }}</span>
+        <span class="rider-vehicle">{{ tracking.rider.vehicleType || 'Motorcycle' }}</span>
+        <span class="rider-eta" *ngIf="tracking.rider.etaMinutes">
+          {{ tracking.rider.etaMinutes }} min away
+        </span>
+      </div>
+    </div>
+    <div class="rider-actions">
+      <a [href]="'tel:' + tracking.rider.phone" class="action-btn call-btn">
+        <i class="fas fa-phone"></i>
+        <span>Call</span>
+      </a>
+      <button class="action-btn message-btn" (click)="openChat()">
+        <i class="fas fa-comment"></i>
+        <span>Chat</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline-section">
+    <h3>Order Progress</h3>
+    <div class="timeline">
+
+      <!-- Completed / current steps -->
+      <div
+        *ngFor="let event of tracking.timeline"
+        class="timeline-item"
+        [class.completed]="event.isCompleted && !event.isCurrent"
+        [class.current]="event.isCurrent">
+        <div class="timeline-dot">
+          <i *ngIf="event.isCompleted && !event.isCurrent" class="fas fa-check"></i>
+          <i *ngIf="event.isCurrent" class="fas fa-circle"></i>
+        </div>
+        <div class="timeline-content">
+          <span class="timeline-title">{{ event.title }}</span>
+          <span class="timeline-desc" *ngIf="event.description">{{ event.description }}</span>
+          <span class="timeline-time" *ngIf="event.occurredAt">
+            {{ event.occurredAt | date:'MMM d · h:mm a' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Upcoming steps (grayed out) -->
+      <ng-container *ngIf="tracking.status !== 'Delivered' && tracking.status !== 'Completed' && tracking.status !== 'Cancelled'">
+        <div class="timeline-item upcoming"
+          *ngIf="tracking.status === 'Pending' || tracking.status === 'PaymentConfirmed'">
+          <div class="timeline-dot upcoming-dot"></div>
+          <div class="timeline-content"><span class="timeline-title upcoming-title">Preparing Your Food</span></div>
+        </div>
+        <div class="timeline-item upcoming"
+          *ngIf="tracking.status === 'Pending' || tracking.status === 'PaymentConfirmed' || tracking.status === 'Preparing' || tracking.status === 'ReadyForPickup'">
+          <div class="timeline-dot upcoming-dot"></div>
+          <div class="timeline-content"><span class="timeline-title upcoming-title">On the Way</span></div>
+        </div>
+        <div class="timeline-item upcoming">
+          <div class="timeline-dot upcoming-dot"></div>
+          <div class="timeline-content"><span class="timeline-title upcoming-title">Delivered</span></div>
+        </div>
+      </ng-container>
+
+    </div>
+  </div>
+
+  <!-- Restaurant Contact -->
+  <div class="contact-section" *ngIf="order">
+    <h3>Restaurant</h3>
+    <div class="contact-card">
+      <span class="contact-name">{{ order.restaurantName || 'Your Restaurant' }}</span>
+      <a *ngIf="order.restaurantPhone" [href]="'tel:' + order.restaurantPhone" class="contact-phone">
+        <i class="fas fa-phone"></i>
+        {{ order.restaurantPhone }}
+      </a>
+    </div>
+  </div>
+
+  <!-- Order Summary -->
+  <div class="order-summary" *ngIf="order">
+    <h3>Order Summary</h3>
+    <div class="items-list">
+      <div class="item" *ngFor="let item of order.items">
+        <span class="item-qty">{{ item.quantity }}x</span>
+        <span class="item-name">{{ item.name }}</span>
+        <span class="item-price">${{ (item.totalPrice ?? item.unitPrice * item.quantity).toFixed(2) }}</span>
+      </div>
+      <div *ngIf="!order.items || order.items.length === 0" class="no-items">
+        <i class="fas fa-info-circle"></i> Items are being loaded…
+      </div>
+    </div>
+    <div class="totals">
+      <div class="total-row">
+        <span>Subtotal</span>
+        <span>${{ (order.subtotal ?? 0).toFixed(2) }}</span>
+      </div>
+      <div class="total-row" *ngIf="(order.deliveryFee ?? 0) > 0">
+        <span>Delivery Fee</span>
+        <span>${{ (order.deliveryFee ?? 0).toFixed(2) }}</span>
+      </div>
+      <div class="total-row" *ngIf="(order.serviceFee ?? 0) > 0">
+        <span>Service Fee</span>
+        <span>${{ (order.serviceFee ?? 0).toFixed(2) }}</span>
+      </div>
+      <div class="total-row" *ngIf="(order.tip ?? 0) > 0">
+        <span>Tip</span>
+        <span>${{ (order.tip ?? 0).toFixed(2) }}</span>
+      </div>
+      <div class="total-row total">
+        <span>Total</span>
+        <span>${{ (order.total ?? order.subtotal ?? 0).toFixed(2) }}</span>
+      </div>
+    </div>
+
+    <!-- Payment Info -->
+    <div class="payment-info" *ngIf="order.payment">
+      <i class="fas"
+         [class.fa-money-bill-wave]="order.payment.method === 'CashOnDelivery'"
+         [class.fa-credit-card]="order.payment.method !== 'CashOnDelivery'"></i>
+      <span *ngIf="order.payment.method === 'CashOnDelivery'">
+        Cash on Delivery · ${{ (order.total ?? order.subtotal ?? 0).toFixed(2) }}
+      </span>
+      <span *ngIf="order.payment.method !== 'CashOnDelivery'">
+        Paid by Card
+      </span>
+    </div>
+  </div>
+
+  <!-- Cancel Action -->
+  <div class="actions" *ngIf="canCancel">
+    <button class="cancel-btn" (click)="cancelOrder()">Cancel Order</button>
+  </div>
+
+
+</div>
+
+<!-- Loading (hide banner during spinner to avoid overlap) -->
+<div class="loading" *ngIf="!tracking">
+  <div class="spinner"></div>
+  <span>Loading order…</span>
+</div>

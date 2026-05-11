@@ -1,0 +1,96 @@
+<div class="orders-page">
+  <div class="page-header">
+    <h1>Orders</h1>
+    <div class="filters">
+      <button *ngFor="let tab of tabs" 
+              [class.active]="activeTab === tab.value"
+              (click)="activeTab = tab.value">
+        {{ tab.label }}
+        <span class="count" *ngIf="tab.count">{{ tab.count }}</span>
+      </button>
+    </div>
+    <button class="btn-secondary" (click)="loadOrders()" style="margin-left:auto">
+      <i class="fas fa-sync-alt"></i> Refresh
+    </button>
+  </div>
+
+  <div class="loading-state" *ngIf="loading">
+    <i class="fas fa-spinner fa-spin"></i> Loading orders...
+  </div>
+
+  <div class="error-state" *ngIf="!loading && loadError">
+    <i class="fas fa-exclamation-circle"></i>
+    <p>Failed to load orders.</p>
+    <button class="btn-primary" (click)="loadOrders()">Retry</button>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && !loadError && filteredOrders.length === 0">
+    <i class="fas fa-clipboard-list"></i>
+    <p>No orders found</p>
+  </div>
+  
+  <div class="orders-grid" *ngIf="!loading && !loadError">
+    <div class="order-card" [ngClass]="order.statusClass" *ngFor="let order of filteredOrders">
+      <div class="order-header">
+        <span class="order-id">#{{ order.orderNumber }}</span>
+        <span class="order-time">{{ order.time }}</span>
+      </div>
+      
+      <div class="customer-info">
+        <i class="fas fa-user"></i>
+        <span>{{ order.customer || 'Customer' }}</span>
+      </div>
+      
+      <div class="order-items">
+        <div class="item" *ngIf="order.items && order.items.length > 0; else itemCount">
+          <div *ngFor="let item of order.items">
+            <span class="qty">{{ item.qty }}x</span>
+            <span class="name">{{ item.name }}</span>
+          </div>
+        </div>
+        <ng-template #itemCount>
+          <span class="qty">{{ order.itemCount }} item(s)</span>
+        </ng-template>
+      </div>
+      
+      <div class="order-footer">
+        <span class="total">${{ order.total | number:'1.2-2' }}</span>
+        <div class="actions">
+          <button class="btn-secondary" *ngIf="order.status === 0 || order.status === 1" (click)="rejectOrder(order)">
+            Reject
+          </button>
+          <button class="btn-primary" (click)="advanceOrder(order)">
+            {{ getActionLabel(order) }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Order Detail Modal -->
+<div class="modal-overlay" *ngIf="selectedOrder" (click)="closeOrderDetail()">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Order #{{ selectedOrder.orderNumber }}</h2>
+      <button class="close-btn" (click)="closeOrderDetail()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <p><strong>Customer:</strong> {{ selectedOrder.customer || 'N/A' }}</p>
+      <p *ngIf="selectedOrder.phone"><strong>Phone:</strong> {{ selectedOrder.phone }}</p>
+      <p><strong>Time:</strong> {{ selectedOrder.time }}</p>
+      <p><strong>Status:</strong> {{ selectedOrder.statusLabel }}</p>
+      <p *ngIf="selectedOrder.notes"><strong>Notes:</strong> {{ selectedOrder.notes }}</p>
+      <p><strong>Items:</strong></p>
+      <ul *ngIf="selectedOrder.items && selectedOrder.items.length > 0">
+        <li *ngFor="let item of selectedOrder.items">{{ item.qty }}x {{ item.name }} - ${{ item.price | number:'1.2-2' }}</li>
+      </ul>
+      <p *ngIf="selectedOrder.subtotal != null"><strong>Subtotal:</strong> ${{ selectedOrder.subtotal | number:'1.2-2' }}</p>
+      <p *ngIf="selectedOrder.deliveryFee != null"><strong>Delivery Fee:</strong> ${{ selectedOrder.deliveryFee | number:'1.2-2' }}</p>
+      <p><strong>Total:</strong> ${{ selectedOrder.total | number:'1.2-2' }}</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeOrderDetail()">Close</button>
+    </div>
+  </div>
+</div>

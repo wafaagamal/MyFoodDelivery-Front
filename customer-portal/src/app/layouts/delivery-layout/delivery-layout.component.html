@@ -1,0 +1,103 @@
+<div class="layout-container">
+  <!-- Mobile Header -->
+  <header class="mobile-header">
+    <div class="header-left">
+      <span class="logo-icon">🚴</span>
+      <span class="logo-text">Rider App</span>
+    </div>
+    <div class="header-right">
+      <div class="status-toggle" [class.online]="isOnline" (click)="toggleOnlineStatus()">
+        <span class="status-dot"></span>
+        <span>{{ isOnline ? 'Online' : 'Offline' }}</span>
+      </div>
+      <button class="menu-btn" (click)="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </header>
+  
+  <!-- Stats Bar -->
+  <div class="stats-bar" *ngIf="isOnline">
+    <div class="stat-item">
+      <i class="fas fa-motorcycle"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ todayDeliveries }}</span>
+        <span class="stat-label">Today</span>
+      </div>
+    </div>
+    <div class="stat-item">
+      <i class="fas fa-dollar-sign"></i>
+      <div class="stat-info">
+        <span class="stat-value">${{ todayEarnings }}</span>
+        <span class="stat-label">Earnings</span>
+      </div>
+    </div>
+    <div class="stat-item">
+      <i class="fas fa-star"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ rating }}</span>
+        <span class="stat-label">Rating</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+  
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a routerLink="/delivery/home" routerLinkActive="active" class="nav-item">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a routerLink="/delivery/deliveries" routerLinkActive="active" class="nav-item">
+      <i class="fas fa-box"></i>
+      <span>Deliveries</span>
+      <span class="badge" *ngIf="activeDelivery">1</span>
+    </a>
+    <a routerLink="/delivery/earnings" routerLinkActive="active" class="nav-item">
+      <i class="fas fa-wallet"></i>
+      <span>Earnings</span>
+    </a>
+    <a routerLink="/delivery/profile" routerLinkActive="active" class="nav-item">
+      <i class="fas fa-user"></i>
+      <span>Profile</span>
+    </a>
+  </nav>
+  
+  <!-- Side Menu -->
+  <div class="side-menu-overlay" [class.active]="menuOpen" (click)="toggleMenu()"></div>
+  <aside class="side-menu" [class.active]="menuOpen">
+    <div class="menu-header">
+      <img [src]="riderPhoto" alt="Rider" class="rider-photo">
+      <div class="rider-info">
+        <span class="rider-name">{{ riderName }}</span>
+        <span class="rider-id">ID: {{ riderId }}</span>
+      </div>
+    </div>
+    <nav class="menu-nav">
+      <a routerLink="/delivery/account" (click)="toggleMenu()">
+        <i class="fas fa-user-circle"></i> Account Settings
+      </a>
+      <a routerLink="/delivery/vehicle" (click)="toggleMenu()">
+        <i class="fas fa-motorcycle"></i> Vehicle Info
+      </a>
+      <a routerLink="/delivery/documents" (click)="toggleMenu()">
+        <i class="fas fa-file-alt"></i> Documents
+      </a>
+      <a routerLink="/delivery/support" (click)="toggleMenu()">
+        <i class="fas fa-headset"></i> Support
+      </a>
+      <a routerLink="/delivery/history" (click)="toggleMenu()">
+        <i class="fas fa-history"></i> Delivery History
+      </a>
+    </nav>
+    <div class="menu-footer">
+      <button class="logout-btn" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i> Log Out
+      </button>
+    </div>
+  </aside>
+</div>

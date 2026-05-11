@@ -1,0 +1,131 @@
+<div class="orders-container">
+
+  <!-- Header -->
+  <div class="orders-header">
+    <h1>My Orders</h1>
+    <button class="refresh-btn" (click)="refresh()" [class.spinning]="isRefreshing" title="Refresh">
+      <i class="fas fa-sync-alt"></i>
+    </button>
+  </div>
+
+  <!-- Active Orders -->
+  <div class="active-orders" *ngIf="activeOrders.length > 0">
+    <div class="section-label">
+      <span>Active Orders</span>
+      <span class="active-badge">{{ activeOrders.length }}</span>
+    </div>
+    <div
+      *ngFor="let order of activeOrders"
+      class="order-card active"
+      [routerLink]="['/orders', order.id, 'tracking']">
+      <div class="order-icon">
+        <i class="fas fa-fire-alt"></i>
+      </div>
+      <div class="order-info">
+        <div class="card-top-row">
+          <span class="restaurant">{{ order.restaurantName }}</span>
+          <span class="order-num">#{{ order.orderNumber }}</span>
+        </div>
+        <div class="progress-track">
+          <div
+            *ngFor="let step of progressSteps; let i = index"
+            class="progress-step"
+            [class.done]="isStepDone(order.status, i)"
+            [class.current]="isStepCurrent(order.status, i)">
+            <div class="step-dot"></div>
+            <div class="step-line" *ngIf="i < progressSteps.length - 1"></div>
+          </div>
+        </div>
+        <div class="status-eta-row">
+          <span class="active-status">{{ getStatusText(order.status) }}</span>
+          <span class="eta" *ngIf="order.estimatedMinutes">~{{ order.estimatedMinutes }} min</span>
+        </div>
+        <span class="details">{{ order.itemCount }} item{{ order.itemCount !== 1 ? 's' : '' }} · ${{ (order.totalAmount ?? 0).toFixed(2) }}</span>
+      </div>
+      <div class="order-arrow">
+        <i class="fas fa-chevron-right"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button
+      class="tab"
+      [class.active]="activeTab === 'all'"
+      (click)="setTab('all')">
+      All
+      <span class="tab-count" *ngIf="activeTab === 'all' && pastOrders.length > 0">{{ pastOrders.length }}</span>
+    </button>
+    <button
+      class="tab"
+      [class.active]="activeTab === 'completed'"
+      (click)="setTab('completed')">
+      Completed
+    </button>
+    <button
+      class="tab"
+      [class.active]="activeTab === 'cancelled'"
+      (click)="setTab('cancelled')">
+      Cancelled
+    </button>
+  </div>
+
+  <!-- Skeleton Loading -->
+  <div class="order-list" *ngIf="isLoading">
+    <div class="order-card skeleton" *ngFor="let s of skeletons">
+      <div class="skeleton-img"></div>
+      <div class="skeleton-body">
+        <div class="skel-line wide"></div>
+        <div class="skel-line medium"></div>
+        <div class="skel-line narrow"></div>
+      </div>
+      <div class="skeleton-badge"></div>
+    </div>
+  </div>
+
+  <!-- Order List -->
+  <div class="order-list" *ngIf="!isLoading">
+    <div
+      *ngFor="let order of pastOrders"
+      class="order-card"
+      [routerLink]="['/orders', order.id, 'tracking']">
+      <div class="order-image">
+        <img
+          [src]="order.restaurantLogo || 'assets/restaurant-placeholder.svg'"
+          [alt]="order.restaurantName"
+          (error)="onImgError($event)">
+      </div>
+      <div class="order-info">
+        <div class="card-top-row">
+          <span class="restaurant">{{ order.restaurantName }}</span>
+          <span class="order-num">#{{ order.orderNumber }}</span>
+        </div>
+        <span class="details">{{ order.itemCount }} item{{ order.itemCount !== 1 ? 's' : '' }} · ${{ (order.totalAmount ?? 0).toFixed(2) }}</span>
+        <span class="date">{{ order.createdAt | date:'MMM d, y · h:mm a' }}</span>
+      </div>
+      <div class="card-right">
+        <span class="order-status" [ngClass]="getStatusClass(order.status)">
+          {{ getStatusText(order.status) }}
+        </span>
+        <button
+          *ngIf="order.status === 'Delivered' || order.status === 'Completed'"
+          class="reorder-btn"
+          (click)="reorder($event, order)">
+          Reorder
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!isLoading && pastOrders.length === 0">
+    <div class="empty-icon">
+      <i class="fas fa-receipt"></i>
+    </div>
+    <h3>{{ emptyTitle }}</h3>
+    <p>{{ emptySubtitle }}</p>
+    <button routerLink="/customer/restaurants">Browse Restaurants</button>
+  </div>
+
+</div>

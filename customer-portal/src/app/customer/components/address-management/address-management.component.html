@@ -1,0 +1,134 @@
+<div class="addresses-container">
+  <div class="header">
+    <h1>Delivery Addresses</h1>
+    <button class="btn-add" (click)="showAddForm = true" *ngIf="!showAddForm">
+      <span class="icon">+</span> Add Address
+    </button>
+  </div>
+
+  <!-- Add Address Form -->
+  <div class="add-form-card" *ngIf="showAddForm">
+    <h3>{{ editingAddress ? 'Edit Address' : 'Add New Address' }}</h3>
+    <form [formGroup]="addressForm" (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="label">Address Label *</label>
+          <input id="label" type="text" formControlName="label" placeholder="e.g., Home, Work">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-2">
+          <label for="street">Street *</label>
+          <input id="street" type="text" formControlName="street" placeholder="Street name">
+        </div>
+        <div class="form-group">
+          <label for="buildingNumber">Building # *</label>
+          <input id="buildingNumber" type="text" formControlName="buildingNumber">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="floor">Floor</label>
+          <input id="floor" type="text" formControlName="floor">
+        </div>
+        <div class="form-group">
+          <label for="apartment">Apartment</label>
+          <input id="apartment" type="text" formControlName="apartment">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="city">City *</label>
+          <input id="city" type="text" formControlName="city">
+        </div>
+        <div class="form-group">
+          <label for="district">District</label>
+          <input id="district" type="text" formControlName="district">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="postalCode">Postal Code *</label>
+          <input id="postalCode" type="text" formControlName="postalCode">
+        </div>
+        <div class="form-group">
+          <label for="country">Country *</label>
+          <input id="country" type="text" formControlName="country">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="deliveryInstructions">Delivery Instructions</label>
+        <textarea 
+          id="deliveryInstructions" 
+          formControlName="deliveryInstructions"
+          rows="3"
+          placeholder="e.g., Ring the doorbell twice, leave at the door...">
+        </textarea>
+      </div>
+
+      <div class="form-group checkbox-group">
+        <label>
+          <input type="checkbox" formControlName="isDefault">
+          Set as default address
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="cancelAdd()">
+          Cancel
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="addressForm.invalid">
+          {{ editingAddress ? 'Save Changes' : 'Add Address' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Addresses List -->
+  <div class="addresses-list">
+    <div 
+      class="address-card" 
+      *ngFor="let address of addresses$ | async"
+      [class.default]="address.isDefault">
+      <div class="address-header">
+        <span class="label">{{ address.label }}</span>
+        <span class="default-badge" *ngIf="address.isDefault">Default</span>
+      </div>
+      
+      <p class="full-address">{{ address.fullAddress }}</p>
+      
+      <p class="instructions" *ngIf="address.deliveryInstructions">
+        <em>{{ address.deliveryInstructions }}</em>
+      </p>
+
+      <div class="address-actions">
+        <button 
+          class="btn-text" 
+          *ngIf="!address.isDefault"
+          (click)="setDefault(address.id)">
+          Set as Default
+        </button>
+        <button class="btn-text" (click)="editAddress(address)">
+          Edit
+        </button>
+        <button class="btn-text danger" (click)="removeAddress(address.id)">
+          Remove
+        </button>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="(addresses$ | async)?.length === 0">
+      <div class="icon">📍</div>
+      <h3>No addresses yet</h3>
+      <p>Add your first delivery address to start ordering</p>
+      <button class="btn-primary" (click)="showAddForm = true">
+        Add Your First Address
+      </button>
+    </div>
+  </div>
+</div>

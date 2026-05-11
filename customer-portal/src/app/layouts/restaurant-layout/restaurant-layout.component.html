@@ -1,0 +1,80 @@
+<div class="layout-container">
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.collapsed]="sidebarCollapsed">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">🍽️</span>
+        <span class="logo-text" *ngIf="!sidebarCollapsed">Restaurant Portal</span>
+      </div>
+      <button class="toggle-btn" (click)="toggleSidebar()">
+        <i class="fas" [class.fa-chevron-left]="!sidebarCollapsed" [class.fa-chevron-right]="sidebarCollapsed"></i>
+      </button>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <a routerLink="/restaurant/dashboard" routerLinkActive="active" class="nav-item">
+        <i class="fas fa-chart-line"></i>
+        <span *ngIf="!sidebarCollapsed">Dashboard</span>
+      </a>
+      <a routerLink="/restaurant/orders" routerLinkActive="active" class="nav-item">
+        <i class="fas fa-receipt"></i>
+        <span *ngIf="!sidebarCollapsed">Orders</span>
+        <span class="badge" *ngIf="pendingOrders > 0">{{ pendingOrders }}</span>
+      </a>
+      <a routerLink="/restaurant/menu" routerLinkActive="active" class="nav-item">
+        <i class="fas fa-utensils"></i>
+        <span *ngIf="!sidebarCollapsed">Menu Management</span>
+      </a>
+      <a routerLink="/restaurant/analytics" routerLinkActive="active" class="nav-item">
+        <i class="fas fa-chart-bar"></i>
+        <span *ngIf="!sidebarCollapsed">Analytics</span>
+      </a>
+      <a routerLink="/restaurant/reviews" routerLinkActive="active" class="nav-item">
+        <i class="fas fa-star"></i>
+        <span *ngIf="!sidebarCollapsed">Reviews</span>
+      </a>
+      <a routerLink="/restaurant/settings" routerLinkActive="active" class="nav-item">
+        <i class="fas fa-cog"></i>
+        <span *ngIf="!sidebarCollapsed">Settings</span>
+      </a>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <div class="store-status" [class.open]="isOpen">
+        <span class="status-dot"></span>
+        <span *ngIf="!sidebarCollapsed">{{ isOpen ? 'Store Open' : 'Store Closed' }}</span>
+      </div>
+      <button class="logout-btn" (click)="logout()" *ngIf="!sidebarCollapsed">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+      <button class="logout-btn icon-only" (click)="logout()" *ngIf="sidebarCollapsed" title="Logout">
+        <i class="fas fa-sign-out-alt"></i>
+      </button>
+    </div>
+  </aside>
+  
+  <!-- Main Content -->
+  <div class="main-wrapper">
+    <header class="top-navbar">
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search orders, menu items...">
+      </div>
+      <div class="navbar-actions">
+        <button class="action-btn notifications" (click)="toggleNotifications()">
+          <i class="fas fa-bell"></i>
+          <span class="badge" *ngIf="notifications > 0">{{ notifications }}</span>
+        </button>
+        <div class="user-menu">
+          <img *ngIf="restaurantLogo" [src]="restaurantLogo" alt="Restaurant" class="avatar">
+          <span *ngIf="!restaurantLogo" class="avatar avatar-placeholder"><i class="fas fa-store"></i></span>
+          <span class="restaurant-name">{{ currentUser?.email || restaurantName }}</span>
+        </div>
+      </div>
+    </header>
+    
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

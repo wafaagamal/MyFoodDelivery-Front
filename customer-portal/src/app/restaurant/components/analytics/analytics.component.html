@@ -1,0 +1,115 @@
+<div class="analytics-page">
+  <div class="page-header">
+    <h1>Analytics</h1>
+    <div class="date-range">
+      <button *ngFor="let range of dateRanges" 
+              [class.active]="activeRange === range.value"
+              (click)="onRangeChange(range.value)">
+        {{ range.label }}
+      </button>
+    </div>
+  </div>
+  
+  <!-- Overview Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-header">
+        <span class="stat-label">Total Revenue</span>
+        <span class="stat-change positive">+15.3%</span>
+      </div>
+      <span class="stat-value">${{ totalRevenue | number:'1.0-0' }}</span>
+      <div class="stat-chart revenue"></div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-header">
+        <span class="stat-label">Total Orders</span>
+        <span class="stat-change positive">+8.7%</span>
+      </div>
+      <span class="stat-value">{{ totalOrders }}</span>
+      <div class="stat-chart orders"></div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-header">
+        <span class="stat-label">Avg Order Value</span>
+        <span class="stat-change positive">+5.2%</span>
+      </div>
+      <span class="stat-value">${{ avgOrderValue | number:'1.2-2' }}</span>
+      <div class="stat-chart avg"></div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-header">
+        <span class="stat-label">Customer Rating</span>
+        <span class="stat-change neutral">0.0%</span>
+      </div>
+      <span class="stat-value">{{ customerRating }}<span class="star">★</span></span>
+      <div class="rating-bars">
+        <div class="bar" *ngFor="let pct of ratingBars" [style.width.%]="pct"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Charts Section -->
+  <div class="charts-row">
+    <div class="chart-card large">
+      <h3>Revenue Over Time</h3>
+      <div class="chart-placeholder">
+        <div class="bar-chart">
+          <div class="bar" *ngFor="let day of weeklyRevenue" 
+               [style.height.%]="(day.value / maxRevenue) * 100">
+            <span class="bar-label">{{ day.label }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="chart-card">
+      <h3>Order Types</h3>
+      <div class="donut-chart">
+        <div class="donut-center">
+          <span class="donut-value">{{ totalOrders }}</span>
+          <span class="donut-label">Orders</span>
+        </div>
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item">
+          <span class="dot delivery"></span>
+          <span>Delivery (65%)</span>
+        </div>
+        <div class="legend-item">
+          <span class="dot pickup"></span>
+          <span>Pickup (25%)</span>
+        </div>
+        <div class="legend-item">
+          <span class="dot dinein"></span>
+          <span>Dine-in (10%)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Top Items -->
+  <div class="top-items-card">
+    <h3>Top Selling Items</h3>
+    <div class="items-list">
+      <div class="item-row" *ngFor="let item of topItems; let i = index">
+        <span class="rank">#{{ i + 1 }}</span>
+        <img *ngIf="item.image" [src]="item.image" [alt]="item.name">
+        <span *ngIf="!item.image" class="item-img-placeholder"><i class="fas fa-utensils"></i></span>
+        <div class="item-info">
+          <span class="item-name">{{ item.name }}</span>
+          <span class="item-category">{{ item.category }}</span>
+        </div>
+        <div class="item-stats">
+          <span class="orders">{{ item.orders }} orders</span>
+          <span class="revenue">${{ item.revenue | number:'1.0-0' }}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="fill" [style.width.%]="item.percentage"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

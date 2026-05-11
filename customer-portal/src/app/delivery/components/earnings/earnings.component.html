@@ -1,0 +1,83 @@
+<div class="earnings-page">
+  <h1>Earnings</h1>
+  
+  <!-- Period Selector -->
+  <div class="period-tabs">
+    <button *ngFor="let period of periods" 
+            [class.active]="activePeriod === period.value"
+            (click)="changePeriod(period.value)">
+      {{ period.label }}
+    </button>
+  </div>
+  
+  <!-- Total Earnings Card -->
+  <div class="total-card">
+    <span class="label">Total Earnings</span>
+    <span class="amount">${{ totalEarnings | number:'1.2-2' }}</span>
+    <span class="comparison positive">
+      <i class="fas fa-arrow-up"></i> +12.5% from last {{ activePeriod }}
+    </span>
+  </div>
+  
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="value">{{ totalDeliveries }}</span>
+      <span class="label">Deliveries</span>
+    </div>
+    <div class="stat-card">
+      <span class="value">${{ totalTips | number:'1.2-2' }}</span>
+      <span class="label">Tips</span>
+    </div>
+    <div class="stat-card">
+      <span class="value">{{ activeHours }}h</span>
+      <span class="label">Active Time</span>
+    </div>
+    <div class="stat-card">
+      <span class="value">${{ avgPerDelivery | number:'1.2-2' }}</span>
+      <span class="label">Per Delivery</span>
+    </div>
+  </div>
+  
+  <!-- Daily Breakdown -->
+  <div class="breakdown-section">
+    <h2>Daily Breakdown</h2>
+    <div class="chart">
+      <div class="bar-container" *ngFor="let day of dailyData">
+        <div class="bar" [style.height.%]="(day.amount / maxDaily) * 100"></div>
+        <span class="bar-label">{{ day.label }}</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Recent Transactions -->
+  <div class="transactions-section">
+    <h2>Recent Transactions</h2>
+    <div class="transaction-list">
+      <div class="transaction" *ngFor="let tx of transactions">
+        <div class="tx-icon" [class]="tx.type">
+          <i class="fas" [class.fa-arrow-down]="tx.type === 'earning'"
+             [class.fa-wallet]="tx.type === 'withdrawal'"></i>
+        </div>
+        <div class="tx-info">
+          <span class="tx-title">{{ tx.title }}</span>
+          <span class="tx-date">{{ tx.date }}</span>
+        </div>
+        <span class="tx-amount" [class]="tx.type">
+          {{ tx.type === 'earning' ? '+' : '-' }}${{ tx.amount | number:'1.2-2' }}
+        </span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Withdraw Button -->
+  <div class="withdraw-section">
+    <div class="balance-info">
+      <span class="label">Available Balance</span>
+      <span class="balance">${{ availableBalance | number:'1.2-2' }}</span>
+    </div>
+    <button class="btn-withdraw" (click)="withdraw()">
+      <i class="fas fa-wallet"></i> Withdraw
+    </button>
+  </div>
+</div>

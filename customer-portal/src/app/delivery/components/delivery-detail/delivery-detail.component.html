@@ -1,0 +1,125 @@
+<div class="delivery-detail">
+  <a routerLink="/delivery/deliveries" class="back-link">
+    <i class="fas fa-arrow-left"></i> Back to Deliveries
+  </a>
+
+  <div class="loading-state" *ngIf="loading">
+    <i class="fas fa-spinner fa-spin"></i> Loading delivery...
+  </div>
+
+  <div class="error-state" *ngIf="!loading && loadError">
+    <i class="fas fa-exclamation-circle"></i>
+    <p>Failed to load delivery details.</p>
+  </div>
+
+  <ng-container *ngIf="!loading && delivery">
+    <div class="status-banner" [ngClass]="delivery.statusClass">
+      <i class="fas" [class.fa-check-circle]="delivery.status === 'Completed'"
+         [class.fa-motorcycle]="delivery.status === 'In Progress'"
+         [class.fa-times-circle]="delivery.status === 'Cancelled'"></i>
+      <span>{{ delivery.status }}</span>
+    </div>
+    
+    <!-- Order Info -->
+    <div class="section order-info">
+      <div class="order-header">
+        <span class="order-id">Order #{{ delivery.orderId }}</span>
+        <span class="order-date">{{ delivery.date }}</span>
+      </div>
+      <div class="restaurant-row">
+        <img [src]="delivery.restaurantLogo" *ngIf="delivery.restaurantLogo" alt="">
+        <div class="restaurant-info">
+          <span class="name">{{ delivery.restaurantName }}</span>
+          <span class="address">{{ delivery.pickupAddress }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Route -->
+    <div class="section route-section">
+      <h3>Delivery Route</h3>
+      <div class="route-map">
+        <div class="map-placeholder">
+          <i class="fas fa-map-marked-alt"></i>
+        </div>
+      </div>
+      <div class="route-points">
+        <div class="point pickup">
+          <div class="point-icon"><i class="fas fa-store"></i></div>
+          <div class="point-info">
+            <span class="label">Pickup</span>
+            <span class="address">{{ delivery.pickupAddress }}</span>
+          </div>
+        </div>
+        <div class="route-line"></div>
+        <div class="point dropoff">
+          <div class="point-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div class="point-info">
+            <span class="label">Dropoff</span>
+            <span class="address">{{ delivery.dropoffAddress }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Customer -->
+    <div class="section customer-section">
+      <h3>Customer</h3>
+      <div class="customer-card">
+        <div class="customer-avatar">{{ delivery.customerName.charAt(0) }}</div>
+        <div class="customer-info">
+          <span class="name">{{ delivery.customerName }}</span>
+          <span class="phone">{{ delivery.customerPhone }}</span>
+        </div>
+        <div class="actions" *ngIf="delivery.status === 'In Progress'">
+          <button class="btn-icon"><i class="fas fa-phone"></i></button>
+          <button class="btn-icon"><i class="fas fa-comment"></i></button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Order Items -->
+    <div class="section items-section">
+      <h3>Order Items</h3>
+      <div class="items-list" *ngIf="delivery.items.length > 0; else noItems">
+        <div class="item" *ngFor="let item of delivery.items">
+          <span class="qty">{{ item.qty }}x</span>
+          <span class="name">{{ item.name }}</span>
+          <span class="price">${{ item.price | number:'1.2-2' }}</span>
+        </div>
+      </div>
+      <ng-template #noItems><p class="muted">No item details available.</p></ng-template>
+    </div>
+    
+    <!-- Earnings -->
+    <div class="section earnings-section">
+      <h3>Earnings Breakdown</h3>
+      <div class="earnings-list">
+        <div class="earning-row">
+          <span>Base Pay</span>
+          <span>${{ delivery.basePay | number:'1.2-2' }}</span>
+        </div>
+        <div class="earning-row" *ngIf="delivery.distanceBonus > 0">
+          <span>Distance Bonus</span>
+          <span>+${{ delivery.distanceBonus | number:'1.2-2' }}</span>
+        </div>
+        <div class="earning-row tip" *ngIf="delivery.tip">
+          <span>Customer Tip</span>
+          <span>+${{ delivery.tip | number:'1.2-2' }}</span>
+        </div>
+        <div class="earning-row total">
+          <span>Total Earned</span>
+          <span>${{ totalEarning | number:'1.2-2' }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="action-buttons" *ngIf="delivery.status === 'In Progress'">
+      <button class="btn-secondary">Report Issue</button>
+      <button class="btn-primary" (click)="advanceStatus()">
+        {{ getNextAction() }}
+      </button>
+    </div>
+  </ng-container>
+</div>

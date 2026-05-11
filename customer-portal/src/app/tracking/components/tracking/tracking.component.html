@@ -1,0 +1,67 @@
+<div class="tracking-container">
+  <div class="tracking-header">
+    <h2>Track Your Order</h2>
+    <div class="order-status" [class]="status.toLowerCase()">
+      {{ status }}
+    </div>
+  </div>
+
+  <div class="map-container" id="tracking-map"></div>
+
+  <div class="tracking-info" *ngIf="riderInfo">
+    <div class="rider-card">
+      <div class="rider-avatar">
+        {{ riderInfo.riderName[0] }}
+      </div>
+      <div class="rider-details">
+        <h3>{{ riderInfo.riderName }}</h3>
+        <p>Your delivery partner</p>
+      </div>
+      <a [href]="'tel:' + riderInfo.riderPhone" class="call-btn">
+        📞
+      </a>
+    </div>
+
+    <div class="eta-card" *ngIf="estimatedMinutes">
+      <div class="eta-icon">🕐</div>
+      <div class="eta-info">
+        <span class="eta-label">Estimated arrival</span>
+        <span class="eta-time">{{ estimatedMinutes }} minutes</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="status-timeline">
+    <div class="timeline-item" [class.active]="isStepActive('confirmed')" [class.completed]="isStepCompleted('confirmed')">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <span class="title">Order Confirmed</span>
+        <span class="time" *ngIf="timestamps.confirmed">{{ timestamps.confirmed | date:'shortTime' }}</span>
+      </div>
+    </div>
+
+    <div class="timeline-item" [class.active]="isStepActive('preparing')" [class.completed]="isStepCompleted('preparing')">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <span class="title">Preparing</span>
+        <span class="time" *ngIf="timestamps.preparing">{{ timestamps.preparing | date:'shortTime' }}</span>
+      </div>
+    </div>
+
+    <div class="timeline-item" [class.active]="isStepActive('pickedUp')" [class.completed]="isStepCompleted('pickedUp')">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <span class="title">Picked Up</span>
+        <span class="time" *ngIf="timestamps.pickedUp">{{ timestamps.pickedUp | date:'shortTime' }}</span>
+      </div>
+    </div>
+
+    <div class="timeline-item" [class.active]="isStepActive('delivered')" [class.completed]="isStepCompleted('delivered')">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <span class="title">Delivered</span>
+        <span class="time" *ngIf="timestamps.delivered">{{ timestamps.delivered | date:'shortTime' }}</span>
+      </div>
+    </div>
+  </div>
+</div>

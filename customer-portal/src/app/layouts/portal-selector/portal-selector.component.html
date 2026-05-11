@@ -1,0 +1,72 @@
+<div class="portal-selector">
+  <div class="top-bar">
+    <a routerLink="/login" class="login-link">
+      <i class="fas fa-sign-in-alt"></i> Sign In
+    </a>
+  </div>
+  
+  <div class="hero-section">
+    <h1 class="main-title">
+      <span class="logo-icon">🍔</span>
+      MyFoodDelivery
+    </h1>
+    <p class="tagline">Choose your portal to continue</p>
+  </div>
+  
+  <div class="portals-grid">
+    <!-- Customer Portal -->
+    <a routerLink="/login" [queryParams]="{role: 'customer'}" class="portal-card customer">
+      <div class="portal-icon">
+        <i class="fas fa-user"></i>
+      </div>
+      <h2>Customer</h2>
+      <p>Order food from your favorite restaurants</p>
+      <ul class="features">
+        <li><i class="fas fa-check"></i> Browse restaurants</li>
+        <li><i class="fas fa-check"></i> Track orders in real-time</li>
+        <li><i class="fas fa-check"></i> Earn loyalty points</li>
+      </ul>
+      <span class="enter-btn">
+        Sign In <i class="fas fa-arrow-right"></i>
+      </span>
+    </a>
+    
+    <!-- Restaurant Portal -->
+    <a routerLink="/login" [queryParams]="{role: 'restaurant'}" class="portal-card restaurant">
+      <div class="portal-icon">
+        <i class="fas fa-store"></i>
+      </div>
+      <h2>Restaurant</h2>
+      <p>Manage your restaurant and orders</p>
+      <ul class="features">
+        <li><i class="fas fa-check"></i> Manage menu items</li>
+        <li><i class="fas fa-check"></i> Process orders</li>
+        <li><i class="fas fa-check"></i> View analytics</li>
+      </ul>
+      <span class="enter-btn">
+        Sign In <i class="fas fa-arrow-right"></i>
+      </span>
+    </a>
+    
+    <!-- Delivery Portal -->
+    <a routerLink="/login" [queryParams]="{role: 'delivery'}" class="portal-card delivery">
+      <div class="portal-icon">
+        <i class="fas fa-motorcycle"></i>
+      </div>
+      <h2>Delivery</h2>
+      <p>Deliver food and earn money</p>
+      <ul class="features">
+        <li><i class="fas fa-check"></i> Accept deliveries</li>
+        <li><i class="fas fa-check"></i> Navigate to locations</li>
+        <li><i class="fas fa-check"></i> Track earnings</li>
+      </ul>
+      <span class="enter-btn">
+        Sign In <i class="fas fa-arrow-right"></i>
+      </span>
+    </a>
+  </div>
+  
+  <footer class="landing-footer">
+    <p>&copy; 2026 MyFoodDelivery. All rights reserved.</p>
+  </footer>
+</div>

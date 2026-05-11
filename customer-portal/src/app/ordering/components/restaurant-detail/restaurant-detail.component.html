@@ -1,0 +1,162 @@
+<div class="restaurant-page" *ngIf="restaurant">
+  <!-- Header -->
+  <div class="restaurant-header">
+    <button class="back-btn" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <img 
+      [src]="restaurant.bannerUrl || restaurant.logoUrl || 'assets/images/restaurant-banner.jpg'" 
+      class="banner-image"
+      [alt]="restaurant.name">
+    <div class="header-overlay"></div>
+    <div class="header-content">
+      <h1>{{ restaurant.name }}</h1>
+      <div class="restaurant-stats">
+        <span class="rating">
+          <i class="fas fa-star"></i>
+          {{ restaurant.averageRating.toFixed(1) }} ({{ restaurant.totalRatings }})
+        </span>
+        <span class="dot">•</span>
+        <span>{{ restaurant.cuisineType }}</span>
+        <span class="dot">•</span>
+        <span>{{ restaurant.estimatedDeliveryMinutes }} min</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Bar -->
+  <div class="info-bar">
+    <div class="info-item">
+      <i class="fas fa-truck"></i>
+      <span>{{ restaurant.deliveryFee === 0 ? 'Free Delivery' : '$' + restaurant.deliveryFee.toFixed(2) + ' delivery' }}</span>
+    </div>
+    <div class="info-item">
+      <i class="fas fa-shopping-bag"></i>
+      <span>Min. ${{ restaurant.minimumOrderAmount.toFixed(2) }}</span>
+    </div>
+    <div class="info-item" [class.closed]="!restaurant.isOpen">
+      <i class="fas fa-clock"></i>
+      <span>{{ restaurant.isOpen ? 'Open Now' : 'Closed' }}</span>
+    </div>
+  </div>
+
+  <!-- Categories Navigation -->
+  <div class="category-nav" *ngIf="menu">
+    <button 
+      *ngFor="let cat of menu.categories"
+      class="category-tab"
+      [class.active]="activeCategory === cat.id"
+      (click)="scrollToCategory(cat.id)">
+      {{ cat.name }}
+    </button>
+  </div>
+
+  <!-- Menu -->
+  <div class="menu-container" *ngIf="menu">
+    <div 
+      *ngFor="let category of menu.categories" 
+      class="menu-category"
+      [id]="'category-' + category.id">
+      <h2>{{ category.name }}</h2>
+      <p class="category-desc" *ngIf="category.description">{{ category.description }}</p>
+      
+      <div class="menu-items">
+        <div 
+          *ngFor="let item of category.items"
+          class="menu-item"
+          [class.unavailable]="!item.isAvailable"
+          (click)="openItemModal(item)">
+          <div class="item-info">
+            <div class="item-badges" *ngIf="item.isVegetarian || item.isSpicy || item.isFeatured">
+              <span class="badge veg" *ngIf="item.isVegetarian">V</span>
+              <span class="badge spicy" *ngIf="item.isSpicy">🌶️</span>
+              <span class="badge featured" *ngIf="item.isFeatured">Popular</span>
+            </div>
+            <h3>{{ item.name }}</h3>
+            <p class="item-desc">{{ item.description }}</p>
+            <div class="item-price">
+              <span class="price" [class.discounted]="item.discountedPrice">
+                ${{ (item.discountedPrice || item.price).toFixed(2) }}
+              </span>
+              <span class="original-price" *ngIf="item.discountedPrice">
+                ${{ item.price.toFixed(2) }}
+              </span>
+            </div>
+          </div>
+          <div class="item-image" *ngIf="item.imageUrl">
+            <img [src]="item.imageUrl" [alt]="item.name">
+            <button class="add-btn" (click)="addToCart(item, $event)">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+          <button class="add-btn-no-image" *ngIf="!item.imageUrl" (click)="addToCart(item, $event)">
+            <i class="fas fa-plus"></i> Add
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Footer -->
+  <div class="cart-footer" *ngIf="cart && cart.items.length > 0">
+    <div class="cart-summary">
+      <span class="cart-count">{{ cart.items.length }} items</span>
+      <span class="cart-total">${{ cart.total.toFixed(2) }}</span>
+    </div>
+    <button class="view-cart-btn" routerLink="/customer/checkout">
+      Checkout <i class="fas fa-arrow-right"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Item Modal -->
+<div class="item-modal" *ngIf="selectedItem" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closeModal()">
+      <i class="fas fa-times"></i>
+    </button>
+    
+    <img [src]="selectedItem.imageUrl || 'assets/images/food-placeholder.jpg'" [alt]="selectedItem.name">
+    
+    <div class="modal-body">
+      <h2>{{ selectedItem.name }}</h2>
+      <p class="description">{{ selectedItem.description }}</p>
+      
+      <div class="details">
+        <span *ngIf="selectedItem.isVegetarian" class="detail-badge">
+          <i class="fas fa-leaf"></i> Vegetarian
+        </span>
+        <span *ngIf="selectedItem.isVegan" class="detail-badge">
+          <i class="fas fa-seedling"></i> Vegan
+        </span>
+        <span *ngIf="selectedItem.isGlutenFree" class="detail-badge">
+          🌾 Gluten Free
+        </span>
+        <span *ngIf="selectedItem.isSpicy" class="detail-badge">
+          🌶️ Spicy
+        </span>
+      </div>
+
+      <div class="allergens" *ngIf="selectedItem.allergens.length > 0">
+        <strong>Allergens:</strong> {{ selectedItem.allergens.join(', ') }}
+      </div>
+
+      <div class="quantity-selector">
+        <button (click)="decreaseQuantity()">-</button>
+        <span>{{ quantity }}</span>
+        <button (click)="increaseQuantity()">+</button>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="add-to-cart-btn" (click)="confirmAddToCart()">
+        Add to Cart • ${{ ((selectedItem.discountedPrice || selectedItem.price) * quantity).toFixed(2) }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Loading -->
+<div class="loading" *ngIf="!restaurant">
+  <div class="spinner"></div>
+</div>

@@ -1,0 +1,59 @@
+<div class="deliveries-page">
+  <div class="page-header">
+    <h1>My Deliveries</h1>
+    <div class="filters">
+      <button *ngFor="let tab of tabs" 
+              [class.active]="activeTab === tab.value"
+              (click)="activeTab = tab.value">
+        {{ tab.label }}
+      </button>
+    </div>
+  </div>
+
+  <div class="loading-state" *ngIf="loading">
+    <i class="fas fa-spinner fa-spin"></i> Loading deliveries...
+  </div>
+
+  <div class="error-state" *ngIf="!loading && loadError">
+    <i class="fas fa-exclamation-circle"></i>
+    <p>Failed to load deliveries.</p>
+    <button class="btn-retry" (click)="loadDeliveries()">Retry</button>
+  </div>
+  
+  <div class="deliveries-list" *ngIf="!loading && !loadError">
+    <a [routerLink]="['/delivery/deliveries', delivery.id]" 
+       class="delivery-item" 
+       *ngFor="let delivery of filteredDeliveries">
+      <div class="delivery-icon" [ngClass]="delivery.statusClass">
+        <i class="fas" [class.fa-check]="delivery.status === 'Completed'"
+           [class.fa-times]="delivery.status === 'Cancelled'"
+           [class.fa-motorcycle]="delivery.status === 'In Progress'"></i>
+      </div>
+      
+      <div class="delivery-info">
+        <div class="delivery-main">
+          <span class="restaurant">{{ delivery.restaurantName }}</span>
+          <span class="earning">${{ delivery.earning | number:'1.2-2' }}</span>
+        </div>
+        <div class="delivery-meta">
+          <span class="address">{{ delivery.dropoffAddress }}</span>
+          <span class="date">{{ delivery.date }}</span>
+        </div>
+        <div class="delivery-stats">
+          <span class="distance"><i class="fas fa-road"></i> {{ delivery.distance }}</span>
+          <span class="time"><i class="fas fa-clock"></i> {{ delivery.duration }}</span>
+          <span class="tip" *ngIf="delivery.tip">
+            <i class="fas fa-heart"></i> +${{ delivery.tip | number:'1.2-2' }} tip
+          </span>
+        </div>
+      </div>
+      
+      <i class="fas fa-chevron-right"></i>
+    </a>
+  </div>
+  
+  <div class="empty-state" *ngIf="!loading && !loadError && filteredDeliveries.length === 0">
+    <i class="fas fa-box-open"></i>
+    <p>No deliveries found</p>
+  </div>
+</div>

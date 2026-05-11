@@ -1,0 +1,196 @@
+.pm-container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+.pm-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+
+  h1 { margin: 0; font-size: 24px; font-weight: 700; }
+}
+
+.back-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: #f5f5f5;
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; text-decoration: none; color: #333;
+  font-size: 16px;
+  &:hover { background: #e0e0e0; }
+}
+
+.banner {
+  padding: 14px 16px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  display: flex; align-items: center; gap: 10px;
+
+  &.success { background: #e8f5e9; color: #2e7d32; }
+  &.error   { background: #ffebee; color: #c62828; }
+}
+
+/* Saved cards */
+.cards-section { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+
+.card-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.card-icon { font-size: 32px; color: #1565c0; min-width: 40px; text-align: center; }
+
+.card-info {
+  flex: 1;
+  display: flex; flex-direction: column; gap: 4px;
+
+  .card-label  { font-weight: 600; font-size: 15px; }
+  .card-number { font-size: 13px; color: #555; font-family: monospace; }
+  .card-expiry { font-size: 12px; color: #888; }
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  width: fit-content;
+  &.default { background: #e3f2fd; color: #1565c0; }
+  &.expired { background: #ffebee; color: #c62828; }
+}
+
+.card-actions {
+  display: flex; flex-direction: column; gap: 8px; align-items: flex-end;
+
+  .btn-set-default {
+    font-size: 12px; padding: 4px 10px;
+    border: 1px solid #1565c0; color: #1565c0;
+    border-radius: 6px; background: transparent; cursor: pointer;
+    &:hover { background: #e3f2fd; }
+  }
+
+  .btn-remove {
+    background: none; border: none; color: #e53935; cursor: pointer;
+    font-size: 16px;
+    &:hover { color: #b71c1c; }
+  }
+}
+
+.empty-state {
+  text-align: center; padding: 40px 16px; color: #aaa;
+  i { font-size: 48px; margin-bottom: 12px; display: block; }
+}
+
+.loading { text-align: center; padding: 40px; color: #888; font-size: 16px; }
+
+.btn-add-card {
+  width: 100%; padding: 16px; background: #1565c0; color: #fff;
+  border: none; border-radius: 12px; font-size: 16px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+  &:hover { background: #0d47a1; }
+}
+
+/* Card form */
+.add-card-form {
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  padding: 24px;
+  background: #fafafa;
+
+  h2 { margin: 0 0 20px; font-size: 18px; }
+}
+
+/* Visual card preview */
+.card-preview {
+  width: 100%;
+  aspect-ratio: 1.586;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, #1565c0, #0d47a1);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 8px 24px rgba(0,0,0,.2);
+  font-family: 'Courier New', monospace;
+  box-sizing: border-box;
+
+  &.visa { background: linear-gradient(135deg, #1a237e, #283593); }
+  &.mc   { background: linear-gradient(135deg, #b71c1c, #c62828); }
+  &.amex { background: linear-gradient(135deg, #1b5e20, #2e7d32); }
+
+  .card-preview-brand { font-size: 40px; text-align: right; }
+  .card-preview-number { font-size: 20px; letter-spacing: 3px; text-align: center; }
+  .card-preview-footer { display: flex; justify-content: space-between; font-size: 13px; opacity: .85; }
+}
+
+/* Form grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  display: flex; flex-direction: column; gap: 6px;
+
+  &.full { grid-column: 1 / -1; }
+
+  label { font-size: 13px; font-weight: 500; color: #555;
+    small { font-weight: 400; color: #888; }
+  }
+
+  input[type="text"],
+  input[type="password"] {
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    background: #fff;
+    &:focus { outline: none; border-color: #1565c0; box-shadow: 0 0 0 3px rgba(21,101,192,.15); }
+  }
+}
+
+.checkbox-group label {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 14px; color: #333; cursor: pointer;
+  input { width: 16px; height: 16px; cursor: pointer; }
+}
+
+.form-actions {
+  display: flex; gap: 12px; justify-content: flex-end;
+  margin-bottom: 16px;
+
+  .btn-cancel {
+    padding: 12px 24px; border: 1px solid #ddd; border-radius: 10px;
+    background: #fff; color: #555; cursor: pointer; font-size: 15px;
+    &:hover { background: #f5f5f5; }
+  }
+
+  .btn-submit {
+    padding: 12px 28px; background: #1565c0; color: #fff;
+    border: none; border-radius: 10px; font-size: 15px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; gap: 8px;
+    &:disabled { background: #90caf9; cursor: not-allowed; }
+    &:not(:disabled):hover { background: #0d47a1; }
+  }
+}
+
+.security-note {
+  font-size: 12px; color: #888; text-align: center;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  margin: 0;
+}

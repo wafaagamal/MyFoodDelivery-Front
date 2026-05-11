@@ -1,0 +1,165 @@
+.deliveries-page {
+  padding-bottom: 80px;
+}
+
+.page-header {
+  margin-bottom: 1.5rem;
+}
+
+.page-header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 1rem 0;
+}
+
+.filters {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.filters button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #3a3a4a;
+  background: transparent;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #999;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.filters button.active {
+  background: #4ecca3;
+  color: #1a1a2e;
+  border-color: #4ecca3;
+}
+
+.deliveries-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.delivery-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #2a2a3a;
+  border-radius: 12px;
+  padding: 1rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.delivery-item:hover {
+  background: #3a3a4a;
+}
+
+.delivery-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.delivery-icon.completed {
+  background: rgba(78,204,163,0.2);
+  color: #4ecca3;
+}
+
+.delivery-icon.cancelled {
+  background: rgba(244,67,54,0.2);
+  color: #f44336;
+}
+
+.delivery-icon.in-progress {
+  background: rgba(255,193,7,0.2);
+  color: #ffc107;
+}
+
+.delivery-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.delivery-main {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.restaurant {
+  font-weight: 600;
+  color: #fff;
+}
+
+.earning {
+  font-weight: 700;
+  color: #4ecca3;
+}
+
+.delivery-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.address {
+  color: #999;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.date {
+  color: #666;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  margin-left: 1rem;
+}
+
+.delivery-stats {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.delivery-stats span {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.tip {
+  color: #f44336 !important;
+}
+
+.delivery-item > .fa-chevron-right {
+  color: #666;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+.empty-state i {
+  font-size: 3rem;
+  color: #444;
+  margin-bottom: 1rem;
+}
+
+.empty-state p {
+  color: #666;
+  font-size: 1.1rem;
+}

@@ -1,0 +1,20 @@
+<div class="legal-container">
+  <div class="legal-header">
+    <a routerLink="/register" class="back-link"><i class="fas fa-arrow-left"></i></a>
+    <h1>{{ title }}</h1>
+    <p class="last-updated">Last updated: {{ lastUpdated }}</p>
+  </div>
+
+  <div class="legal-content">
+    <div class="section" *ngFor="let s of sections">
+      <h2>{{ s.heading }}</h2>
+      <p>{{ s.body }}</p>
+    </div>
+  </div>
+
+  <div class="legal-footer">
+    <a routerLink="/register" class="back-btn">
+      <i class="fas fa-arrow-left"></i> Back to Register
+    </a>
+  </div>
+</div>

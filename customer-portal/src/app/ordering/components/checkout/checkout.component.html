@@ -1,0 +1,201 @@
+<div class="checkout-container">
+      <div class="checkout-header">
+        <button class="back-btn" routerLink="/cart">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1>Checkout</h1>
+      </div>
+
+      <div class="checkout-content" *ngIf="cart && cart.items.length > 0">
+        <!-- Delivery Address -->
+        <section class="checkout-section">
+          <h2><i class="fas fa-map-marker-alt"></i> Delivery Address</h2>
+          <div class="address-list">
+            <div 
+              *ngFor="let addr of addresses" 
+              class="address-card"
+              [class.selected]="selectedAddressId === addr.id"
+              (click)="selectAddress(addr.id)">
+              <div class="address-info">
+                <span class="address-label">{{ addr.label }}</span>
+                <span class="address-text">{{ addr.fullAddress }}</span>
+              </div>
+              <i class="fas fa-check" *ngIf="selectedAddressId === addr.id"></i>
+            </div>
+          </div>
+          <button class="add-new-btn" routerLink="/addresses/new">
+            <i class="fas fa-plus"></i> Add New Address
+          </button>
+        </section>
+
+        <!-- Payment Method -->
+        <section class="checkout-section">
+          <h2><i class="fas fa-credit-card"></i> Payment Method</h2>
+          <div class="payment-options">
+            <div 
+              class="payment-option"
+              [class.selected]="selectedPaymentMethod === PaymentMethodType.CashOnDelivery"
+              (click)="selectPaymentMethod(PaymentMethodType.CashOnDelivery)">
+              <i class="fas fa-money-bill-wave"></i>
+              <span>Cash on Delivery</span>
+            </div>
+            <div 
+              class="payment-option"
+              [class.selected]="selectedPaymentMethod === PaymentMethodType.CreditCard"
+              (click)="selectPaymentMethod(PaymentMethodType.CreditCard)">
+              <i class="fas fa-credit-card"></i>
+              <span>Credit/Debit Card</span>
+            </div>
+          </div>
+
+          <!-- Saved Cards -->
+          <div class="saved-cards" *ngIf="selectedPaymentMethod === PaymentMethodType.CreditCard">
+            <div 
+              *ngFor="let card of paymentMethods" 
+              class="card-option"
+              [class.selected]="selectedPaymentMethodId === card.id"
+              (click)="selectCard(card.id)">
+              <i class="fab" [class.fa-cc-visa]="card.cardBrand === 'visa'"
+                             [class.fa-cc-mastercard]="card.cardBrand === 'mastercard'"
+                             [class.fa-credit-card]="card.cardBrand !== 'visa' && card.cardBrand !== 'mastercard'"></i>
+              <span>**** {{ card.last4Digits }}</span>
+              <span class="expiry" *ngIf="card.expiryDate">{{ card.expiryDate | date:'MM/yy' }}</span>
+            </div>
+            <div *ngIf="paymentMethods.length === 0" class="no-cards-notice">
+              <i class="fas fa-info-circle"></i>
+              <span>No saved cards – you can pay by card upon delivery.</span>
+            </div>
+            <button class="add-new-btn" (click)="addNewCard()">
+              <i class="fas fa-plus"></i> Add New Card
+            </button>
+          </div>
+        </section>
+
+        <!-- Promo Code -->
+        <section class="checkout-section">
+          <h2><i class="fas fa-tag"></i> Promo Code</h2>
+          <div class="promo-input">
+            <input 
+              type="text" 
+              [(ngModel)]="promoCode" 
+              placeholder="Enter promo code"
+              [disabled]="promoApplied">
+            <button 
+              *ngIf="!promoApplied" 
+              (click)="applyPromo()" 
+              [disabled]="!promoCode">
+              Apply
+            </button>
+            <button *ngIf="promoApplied" (click)="removePromo()" class="remove-btn">
+              Remove
+            </button>
+          </div>
+          <div class="promo-success" *ngIf="promoApplied">
+            <i class="fas fa-check-circle"></i> Promo applied! You saved {{ '$' + discount }}
+          </div>
+        </section>
+
+        <!-- Tip -->
+        <section class="checkout-section">
+          <h2><i class="fas fa-hand-holding-heart"></i> Add a Tip for Delivery</h2>
+          <div class="tip-options">
+            <button 
+              *ngFor="let amount of tipOptions"
+              class="tip-btn"
+              [class.selected]="selectedTip === amount"
+              (click)="selectTip(amount)">
+              {{ amount === 0 ? 'No Tip' : '$' + amount }}
+            </button>
+            <button 
+              class="tip-btn"
+              [class.selected]="customTip !== null"
+              (click)="showCustomTip()">
+              Custom
+            </button>
+          </div>
+          <div class="custom-tip-input" *ngIf="showCustomTipInput">
+            <input 
+              type="number" 
+              [(ngModel)]="customTipValue" 
+              placeholder="Enter amount"
+              min="0">
+            <button (click)="applyCustomTip()">Apply</button>
+          </div>
+        </section>
+
+        <!-- Special Instructions -->
+        <section class="checkout-section">
+          <h2><i class="fas fa-clipboard"></i> Special Instructions</h2>
+          <textarea 
+            [(ngModel)]="specialInstructions" 
+            placeholder="Any special requests for your order?"
+            rows="3"></textarea>
+        </section>
+
+        <!-- Order Summary -->
+        <section class="checkout-section summary">
+          <h2>Order Summary</h2>
+          <div class="restaurant-name">{{ cart.restaurantName }}</div>
+          <div class="items-summary">
+            <div class="item" *ngFor="let item of cart.items">
+              <span>{{ item.quantity }}x {{ item.name }}</span>
+              <span>${{ (item.totalPrice ?? 0).toFixed(2) }}</span>
+            </div>
+          </div>
+          <div class="totals">
+            <div class="total-row">
+              <span>Subtotal</span>
+              <span>${{ cart.subtotal.toFixed(2) }}</span>
+            </div>
+            <div class="total-row">
+              <span>Delivery Fee</span>
+              <span>${{ cart.deliveryFee.toFixed(2) }}</span>
+            </div>
+            <div class="total-row">
+              <span>Service Fee</span>
+              <span>${{ cart.serviceFee.toFixed(2) }}</span>
+            </div>
+            <div class="total-row discount" *ngIf="discount > 0">
+              <span>Discount</span>
+              <span>-${{ discount.toFixed(2) }}</span>
+            </div>
+            <div class="total-row" *ngIf="getTip() > 0">
+              <span>Tip</span>
+              <span>${{ getTip().toFixed(2) }}</span>
+            </div>
+            <div class="total-row grand-total">
+              <span>Total</span>
+              <span>${{ getTotal().toFixed(2) }}</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-cart" *ngIf="isLoadingCart">
+        <div class="spinner"></div>
+        <p>Loading your cart...</p>
+      </div>
+
+      <!-- Empty Cart -->
+      <div class="empty-cart" *ngIf="!isLoadingCart && (!cart || cart.items.length === 0)">
+        <i class="fas fa-shopping-cart"></i>
+        <h2>Your cart is empty</h2>
+        <button routerLink="/restaurants">Browse Restaurants</button>
+      </div>
+
+      <!-- Place Order Button -->
+      <div class="checkout-footer" *ngIf="cart && cart.items.length > 0">
+        <button 
+          class="place-order-btn"
+          [disabled]="!canPlaceOrder || isProcessing"
+          (click)="placeOrder()">
+          <span *ngIf="!isProcessing">
+            Place Order • ${{ getTotal().toFixed(2) }}
+          </span>
+          <span *ngIf="isProcessing">
+            <i class="fas fa-spinner fa-spin"></i> Processing...
+          </span>
+        </button>
+      </div>
+    </div>

@@ -1,0 +1,121 @@
+<div class="register-container">
+  <div class="register-header">
+    <h1>Create Account</h1>
+    <p>Sign up to get started</p>
+  </div>
+
+  <!-- Role Selection -->
+  <div class="role-selector">
+    <label>I want to register as:</label>
+    <div class="role-options">
+      <div 
+        *ngFor="let role of roles"
+        class="role-card"
+        [class.selected]="selectedRole === role.value"
+        (click)="selectRole(role.value)">
+        <i [class]="role.icon"></i>
+        <span class="role-label">{{ role.label }}</span>
+        <span class="role-desc">{{ role.description }}</span>
+      </div>
+    </div>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" class="register-form" autocomplete="on">
+    <div class="form-group">
+      <label for="name">Full Name</label>
+      <input 
+        type="text" 
+        id="name" 
+        [(ngModel)]="name" 
+        name="name"
+        autocomplete="name"
+        placeholder="Enter your full name"
+        required>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input 
+        type="email" 
+        id="email" 
+        [(ngModel)]="email" 
+        name="email"
+        autocomplete="email"
+        placeholder="Enter your email"
+        required>
+    </div>
+
+    <div class="form-group">
+      <label for="phone">Phone Number <span class="field-hint">(Egyptian number)</span></label>
+      <div class="phone-input-wrapper">
+        <span class="phone-prefix">+20</span>
+        <input 
+          type="tel" 
+          id="phone" 
+          [(ngModel)]="phone" 
+          name="phone"
+          autocomplete="tel-national"
+          placeholder="1xxxxxxxxx"
+          maxlength="10"
+          required>
+      </div>
+      <small class="field-note">Enter your 10-digit Egyptian mobile number (e.g. 1012345678)</small>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <div class="password-wrapper">
+        <input 
+          [type]="showPassword ? 'text' : 'password'" 
+          id="password" 
+          [(ngModel)]="password" 
+          name="password"
+          autocomplete="new-password"
+          placeholder="Create a password"
+          required>
+        <button type="button" class="eye-btn" (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+          <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="confirmPassword">Confirm Password</label>
+      <div class="password-wrapper">
+        <input 
+          [type]="showConfirmPassword ? 'text' : 'password'" 
+          id="confirmPassword" 
+          [(ngModel)]="confirmPassword" 
+          name="confirmPassword"
+          autocomplete="new-password"
+          placeholder="Confirm your password"
+          required>
+        <button type="button" class="eye-btn" (click)="showConfirmPassword = !showConfirmPassword" [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'">
+          <svg *ngIf="!showConfirmPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg *ngIf="showConfirmPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="error-message" *ngIf="error">
+      {{ error }}
+    </div>
+
+    <div class="terms">
+      <input type="checkbox" id="terms" [(ngModel)]="acceptTerms" name="terms">
+      <label for="terms">
+        I agree to the <a routerLink="/terms">Terms of Service</a> and <a routerLink="/privacy">Privacy Policy</a>
+      </label>
+    </div>
+
+    <button type="submit" [disabled]="isLoading || !acceptTerms">
+      <span *ngIf="!isLoading">Create Account</span>
+      <span *ngIf="isLoading"><i class="fas fa-spinner fa-spin"></i> Creating...</span>
+    </button>
+  </form>
+
+  <div class="login-link">
+    Already have an account? <a routerLink="/login">Sign In</a>
+  </div>
+</div>

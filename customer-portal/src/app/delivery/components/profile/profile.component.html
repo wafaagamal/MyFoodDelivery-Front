@@ -1,0 +1,409 @@
+<div class="profile-page">
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <div class="avatar">
+      <div class="avatar-placeholder" *ngIf="!profile.avatar">{{ getInitials() }}</div>
+      <img *ngIf="profile.avatar" [src]="profile.avatar" alt="">
+      <button class="edit-avatar" (click)="editProfile()">
+        <i class="fas fa-camera"></i>
+      </button>
+    </div>
+    <h1>{{ fullName }}</h1>
+    <span class="rating">
+      <i class="fas fa-star"></i> {{ profile.rating }} 
+      <span class="reviews">({{ profile.totalReviews }} reviews)</span>
+    </span>
+    <div class="badges">
+      <span class="badge" *ngFor="let badge of profile.badges">
+        <i class="fas fa-award"></i> {{ badge }}
+      </span>
+    </div>
+    <div class="member-since">Member since {{ getMemberSince() }}</div>
+  </div>
+  
+  <!-- Stats Summary -->
+  <div class="stats-summary">
+    <div class="stat">
+      <span class="value">{{ profile.totalDeliveries }}</span>
+      <span class="label">Deliveries</span>
+    </div>
+    <div class="divider"></div>
+    <div class="stat">
+      <span class="value">{{ profile.monthsActive }}</span>
+      <span class="label">Months Active</span>
+    </div>
+    <div class="divider"></div>
+    <div class="stat">
+      <span class="value">{{ profile.acceptanceRate }}%</span>
+      <span class="label">Acceptance</span>
+    </div>
+  </div>
+  
+  <!-- Account Section -->
+  <div class="section-header">Account</div>
+  <div class="menu-section">
+    <div class="menu-item" (click)="editProfile()">
+      <div class="menu-icon"><i class="fas fa-user"></i></div>
+      <span class="menu-label">Edit Profile</span>
+      <i class="fas fa-chevron-right"></i>
+    </div>
+    
+    <div class="menu-item" (click)="manageVehicle()">
+      <div class="menu-icon"><i class="fas fa-motorcycle"></i></div>
+      <span class="menu-label">Vehicle Details</span>
+      <span class="menu-value">{{ vehicle.make }} {{ vehicle.model }}</span>
+      <i class="fas fa-chevron-right"></i>
+    </div>
+    
+    <div class="menu-item" (click)="manageDocuments()">
+      <div class="menu-icon"><i class="fas fa-file-alt"></i></div>
+      <span class="menu-label">Documents</span>
+      <span class="badge-status verified">All Verified</span>
+      <i class="fas fa-chevron-right"></i>
+    </div>
+    
+    <div class="menu-item" routerLink="/delivery/earnings">
+      <div class="menu-icon"><i class="fas fa-wallet"></i></div>
+      <span class="menu-label">Payment Settings</span>
+      <i class="fas fa-chevron-right"></i>
+    </div>
+  </div>
+  
+  <!-- Preferences Section -->
+  <div class="section-header">Preferences</div>
+  <div class="menu-section">
+    <div class="menu-item" (click)="toggleNotifications()">
+      <div class="menu-icon"><i class="fas fa-bell"></i></div>
+      <span class="menu-label">Push Notifications</span>
+      <label class="toggle">
+        <input type="checkbox" [(ngModel)]="settings.notifications">
+        <span class="slider"></span>
+      </label>
+    </div>
+    
+    <div class="menu-item" (click)="toggleSounds()">
+      <div class="menu-icon"><i class="fas fa-volume-up"></i></div>
+      <span class="menu-label">Sound Alerts</span>
+      <label class="toggle">
+        <input type="checkbox" [(ngModel)]="settings.sounds">
+        <span class="slider"></span>
+      </label>
+    </div>
+    
+    <div class="menu-item" (click)="openNavigationSelector()">
+      <div class="menu-icon"><i class="fas fa-map"></i></div>
+      <span class="menu-label">Navigation App</span>
+      <span class="menu-value">{{ settings.navigationApp }}</span>
+      <i class="fas fa-chevron-right"></i>
+    </div>
+  </div>
+  
+  <!-- Support Section -->
+  <div class="section-header">Support</div>
+  <div class="menu-section">
+    <div class="menu-item" (click)="openHelp()">
+      <div class="menu-icon"><i class="fas fa-question-circle"></i></div>
+      <span class="menu-label">Help & Support</span>
+      <i class="fas fa-chevron-right"></i>
+    </div>
+    
+    <div class="menu-item" (click)="openAbout()">
+      <div class="menu-icon"><i class="fas fa-info-circle"></i></div>
+      <span class="menu-label">About</span>
+      <i class="fas fa-chevron-right"></i>
+    </div>
+  </div>
+  
+  <button class="btn-logout" (click)="logout()">
+    <i class="fas fa-sign-out-alt"></i> Log Out
+  </button>
+  
+  <p class="version">Version 1.0.0</p>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal-overlay" *ngIf="showEditProfileModal" (click)="closeModals()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Edit Profile</h2>
+      <button class="close-btn" (click)="closeModals()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="avatar-edit">
+        <div class="avatar-large">
+          <div class="avatar-placeholder" *ngIf="!profile.avatar">{{ getInitials() }}</div>
+          <img *ngIf="profile.avatar" [src]="profile.avatar" alt="">
+        </div>
+        <button class="btn-change-photo">Change Photo</button>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" [(ngModel)]="editForm.firstName" placeholder="First Name">
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" [(ngModel)]="editForm.lastName" placeholder="Last Name">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="editForm.email" placeholder="Email" disabled>
+        <span class="hint">Email cannot be changed</span>
+      </div>
+      
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" [(ngModel)]="editForm.phone" placeholder="Phone Number">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeModals()">Cancel</button>
+      <button class="btn-primary" (click)="saveProfile()" [disabled]="isSaving">
+        {{ isSaving ? 'Saving...' : 'Save Changes' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Vehicle Details Modal -->
+<div class="modal-overlay" *ngIf="showVehicleModal" (click)="closeModals()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Vehicle Details</h2>
+      <button class="close-btn" (click)="closeModals()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="vehicle-icon">
+        <i class="fas fa-motorcycle"></i>
+      </div>
+      
+      <div class="form-group">
+        <label>Vehicle Type</label>
+        <select [(ngModel)]="vehicleForm.type">
+          <option value="Motorcycle">Motorcycle</option>
+          <option value="Scooter">Scooter</option>
+          <option value="Bicycle">Bicycle</option>
+          <option value="Car">Car</option>
+        </select>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Make</label>
+          <input type="text" [(ngModel)]="vehicleForm.make" placeholder="e.g. Honda">
+        </div>
+        <div class="form-group">
+          <label>Model</label>
+          <input type="text" [(ngModel)]="vehicleForm.model" placeholder="e.g. CBR 250R">
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Year</label>
+          <input type="number" [(ngModel)]="vehicleForm.year" placeholder="2022">
+        </div>
+        <div class="form-group">
+          <label>Color</label>
+          <input type="text" [(ngModel)]="vehicleForm.color" placeholder="e.g. Red">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>License Plate</label>
+        <input type="text" [(ngModel)]="vehicleForm.licensePlate" placeholder="ABC-1234">
+      </div>
+      
+      <div class="info-box">
+        <i class="fas fa-shield-alt"></i>
+        <div>
+          <strong>Insurance Valid Until</strong>
+          <span>{{ vehicle.insuranceExpiry | date:'MMM d, yyyy' }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeModals()">Cancel</button>
+      <button class="btn-primary" (click)="saveVehicle()" [disabled]="isSaving">
+        {{ isSaving ? 'Saving...' : 'Save Changes' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Documents Modal -->
+<div class="modal-overlay" *ngIf="showDocumentsModal" (click)="closeModals()">
+  <div class="modal-content modal-large" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Documents</h2>
+      <button class="close-btn" (click)="closeModals()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="documents-list">
+        <div class="document-item" *ngFor="let doc of documents">
+          <div class="doc-icon">
+            <i class="fas" [ngClass]="{
+              'fa-id-card': doc.type === 'license',
+              'fa-shield-alt': doc.type === 'insurance',
+              'fa-car': doc.type === 'registration',
+              'fa-user-check': doc.type === 'background'
+            }"></i>
+          </div>
+          <div class="doc-info">
+            <div class="doc-name">{{ doc.name }}</div>
+            <div class="doc-meta">
+              <span *ngIf="doc.expiryDate">Expires: {{ doc.expiryDate | date:'MMM d, yyyy' }}</span>
+              <span *ngIf="!doc.expiryDate">Uploaded: {{ doc.uploadedDate | date:'MMM d, yyyy' }}</span>
+            </div>
+          </div>
+          <div class="doc-status">
+            <span class="status-badge" [ngClass]="doc.status">
+              {{ doc.status | titlecase }}
+            </span>
+            <span class="expiring-soon" *ngIf="isDocumentExpiringSoon(doc)">
+              <i class="fas fa-exclamation-triangle"></i> Expiring Soon
+            </span>
+          </div>
+          <button class="btn-upload" (click)="uploadDocument(doc.type)">
+            <i class="fas fa-upload"></i> Update
+          </button>
+        </div>
+      </div>
+      
+      <div class="add-document">
+        <button class="btn-add-doc">
+          <i class="fas fa-plus"></i> Add New Document
+        </button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-primary" (click)="closeModals()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- Navigation App Selector Modal -->
+<div class="modal-overlay" *ngIf="showNavigationModal" (click)="closeModals()">
+  <div class="modal-content modal-small" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Select Navigation App</h2>
+      <button class="close-btn" (click)="closeModals()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="nav-options">
+        <div class="nav-option" 
+             *ngFor="let app of navigationApps" 
+             [class.selected]="settings.navigationApp === app"
+             (click)="selectNavigationApp(app)">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>{{ app }}</span>
+          <i class="fas fa-check" *ngIf="settings.navigationApp === app"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Help & Support Modal -->
+<div class="modal-overlay" *ngIf="showHelpModal" (click)="closeModals()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Help & Support</h2>
+      <button class="close-btn" (click)="closeModals()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="help-options">
+        <div class="help-item">
+          <div class="help-icon"><i class="fas fa-comments"></i></div>
+          <div class="help-content">
+            <h4>Live Chat</h4>
+            <p>Chat with our support team</p>
+          </div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        
+        <div class="help-item">
+          <div class="help-icon"><i class="fas fa-phone"></i></div>
+          <div class="help-content">
+            <h4>Call Support</h4>
+            <p>+1 (800) 123-4567</p>
+          </div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        
+        <div class="help-item">
+          <div class="help-icon"><i class="fas fa-envelope"></i></div>
+          <div class="help-content">
+            <h4>Email Us</h4>
+            <p>support&#64;myfooddelivery.com</p>
+          </div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        
+        <div class="help-item">
+          <div class="help-icon"><i class="fas fa-book"></i></div>
+          <div class="help-content">
+            <h4>FAQ & Guides</h4>
+            <p>Find answers to common questions</p>
+          </div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        
+        <div class="help-item">
+          <div class="help-icon"><i class="fas fa-bug"></i></div>
+          <div class="help-content">
+            <h4>Report a Problem</h4>
+            <p>Let us know about issues</p>
+          </div>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-primary" (click)="closeModals()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- About Modal -->
+<div class="modal-overlay" *ngIf="showAboutModal" (click)="closeModals()">
+  <div class="modal-content modal-small" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>About</h2>
+      <button class="close-btn" (click)="closeModals()">&times;</button>
+    </div>
+    <div class="modal-body about-content">
+      <div class="app-logo">
+        <span class="logo-icon">🛵</span>
+        <h3>MyFoodDelivery Driver</h3>
+      </div>
+      
+      <p class="app-description">
+        The official driver app for MyFoodDelivery. 
+        Deliver food, earn money, and be your own boss.
+      </p>
+      
+      <div class="about-info">
+        <div class="info-row">
+          <span>Version</span>
+          <span>1.0.0</span>
+        </div>
+        <div class="info-row">
+          <span>Build</span>
+          <span>2026.05.08</span>
+        </div>
+      </div>
+      
+      <div class="about-links">
+        <a href="#">Terms of Service</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Licenses</a>
+      </div>
+      
+      <p class="copyright">© 2026 MyFoodDelivery. All rights reserved.</p>
+    </div>
+  </div>
+</div>

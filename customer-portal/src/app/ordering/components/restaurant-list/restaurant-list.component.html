@@ -1,0 +1,121 @@
+<div class="restaurants-container">
+  <!-- Search Header -->
+  <div class="search-header">
+    <div class="location-bar" style="position:relative">
+      <i class="fas fa-map-marker-alt"></i>
+      <span>{{ currentLocation }}</span>
+      <button class="change-btn" (click)="changeLocation()">Change</button>
+      <!-- Location Picker Dropdown -->
+      <div *ngIf="showLocationPicker" class="location-picker" style="position:absolute;top:100%;left:0;background:#fff;border:1px solid #ddd;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:100;min-width:200px;padding:8px 0">
+        <button (click)="useCurrentLocation()" style="display:block;width:100%;text-align:left;padding:10px 16px;border:none;background:none;cursor:pointer;font-size:14px;color:#f97316">
+          <i class="fas fa-crosshairs"></i> Use My Location
+        </button>
+        <hr style="margin:4px 0;border-color:#eee">
+        <button *ngFor="let city of presetCities"
+          (click)="selectCity(city)"
+          style="display:block;width:100%;text-align:left;padding:10px 16px;border:none;background:none;cursor:pointer;font-size:14px;color:#374151">
+          <i class="fas fa-map-marker-alt" style="color:#9ca3af;margin-right:6px"></i>{{ city.name }}
+        </button>
+      </div>
+    </div>
+    <div class="search-bar">
+      <i class="fas fa-search"></i>
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange($event)"
+        placeholder="Search restaurants or cuisines">
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <button 
+      class="filter-chip"
+      [class.active]="!selectedCuisine"
+      (click)="filterByCuisine(null)">
+      All
+    </button>
+    <button 
+      *ngFor="let cuisine of cuisines"
+      class="filter-chip"
+      [class.active]="selectedCuisine === cuisine"
+      (click)="filterByCuisine(cuisine)">
+      {{ cuisine }}
+    </button>
+  </div>
+
+  <div class="filter-row">
+    <button 
+      class="filter-btn" 
+      [class.active]="openNow"
+      (click)="toggleOpenNow()">
+      <i class="fas fa-clock"></i> Open Now
+    </button>
+    <button class="filter-btn" (click)="showSortOptions()">
+      <i class="fas fa-sort"></i> Sort
+    </button>
+    <button class="filter-btn" (click)="showFilters()">
+      <i class="fas fa-filter"></i> Filters
+    </button>
+  </div>
+
+  <!-- Restaurant List -->
+  <div class="restaurant-grid">
+    <div 
+      *ngFor="let restaurant of restaurants" 
+      class="restaurant-card"
+      [routerLink]="['/customer/restaurants', restaurant.id]">
+      <div class="restaurant-image">
+        <img [src]="restaurant.logoUrl || 'assets/images/restaurant-placeholder.jpg'" [alt]="restaurant.name">
+        <div class="closed-overlay" *ngIf="!restaurant.isOpen">
+          <span>Closed</span>
+        </div>
+        <div class="promo-badge" *ngIf="restaurant.deliveryFee === 0">
+          Free Delivery
+        </div>
+      </div>
+      <div class="restaurant-info">
+        <div class="restaurant-header">
+          <h3 class="restaurant-name">{{ restaurant.name }}</h3>
+          <div class="rating">
+            <i class="fas fa-star"></i>
+            <span>{{ restaurant.averageRating.toFixed(1) }}</span>
+            <span class="rating-count">({{ restaurant.totalRatings }})</span>
+          </div>
+        </div>
+        <div class="restaurant-meta">
+          <span class="cuisine">{{ restaurant.cuisineType }}</span>
+          <span class="dot">•</span>
+          <span class="delivery-time">{{ restaurant.estimatedDeliveryMinutes }} min</span>
+          <span class="dot">•</span>
+          <span class="delivery-fee">
+            {{ restaurant.deliveryFee === 0 ? 'Free' : '$' + restaurant.deliveryFee.toFixed(2) }} delivery
+          </span>
+        </div>
+        <div class="distance" *ngIf="restaurant.distanceKm">
+          <i class="fas fa-map-marker-alt"></i>
+          {{ restaurant.distanceKm }} km away
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <span>Loading restaurants...</span>
+  </div>
+
+  <!-- No Results -->
+  <div class="no-results" *ngIf="!isLoading && restaurants.length === 0">
+    <i class="fas fa-search"></i>
+    <h3>No restaurants found</h3>
+    <p>Try adjusting your search or filters</p>
+  </div>
+
+  <!-- Load More -->
+  <div class="load-more" *ngIf="hasMore && !isLoading">
+    <button (click)="loadMore()">Load More</button>
+  </div>
+</div>

@@ -1,0 +1,61 @@
+<div class="layout-container">
+  <header class="navbar customer-navbar">
+    <div class="navbar-brand">
+      <a routerLink="/customer" class="logo">
+        <span class="logo-icon">🍔</span>
+        <span class="logo-text">MyFoodDelivery</span>
+      </a>
+    </div>
+    <nav class="navbar-nav">
+      <a routerLink="/customer/restaurants" routerLinkActive="active">
+        <i class="fas fa-utensils"></i> Restaurants
+      </a>
+      <a routerLink="/customer/orders" routerLinkActive="active">
+        <i class="fas fa-receipt"></i> My Orders
+      </a>
+      <a routerLink="/customer/profile" routerLinkActive="active">
+        <i class="fas fa-user"></i> Profile
+      </a>
+      <a routerLink="/customer/cart" class="cart-btn">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-count" *ngIf="cartCount > 0">{{ cartCount }}</span>
+      </a>
+    </nav>
+    <div class="navbar-actions">
+      <div class="user-menu" *ngIf="currentUser">
+        <span class="user-greeting">Hi, {{ displayName }}</span>
+        <button class="btn-logout" (click)="logout()">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </div>
+  </header>
+  
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+  
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>MyFoodDelivery</h4>
+        <p>Order your favorite food from the best restaurants.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <a routerLink="/customer/restaurants">Browse Restaurants</a>
+        <a routerLink="/customer/orders">Track Orders</a>
+        <a routerLink="/customer/profile">My Account</a>
+      </div>
+      <div class="footer-section">
+        <h4>Support</h4>
+        <a href="#">Help Center</a>
+        <a href="#">Contact Us</a>
+        <a href="#">FAQs</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 MyFoodDelivery. All rights reserved.</p>
+    </div>
+  </footer>
+</div>

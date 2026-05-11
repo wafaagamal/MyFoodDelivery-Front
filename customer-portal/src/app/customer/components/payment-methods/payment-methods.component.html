@@ -1,0 +1,127 @@
+<div class="pm-container">
+  <div class="pm-header">
+    <a routerLink="/customer/profile" class="back-btn">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <h1>Payment Methods</h1>
+  </div>
+
+  <!-- Saved cards list -->
+  <div class="cards-section" *ngIf="!isLoading">
+    <div class="card-item" *ngFor="let card of paymentMethods">
+      <div class="card-icon">
+        <i class="fab fa-cc-visa"        *ngIf="card.cardBrand === 'visa'"></i>
+        <i class="fab fa-cc-mastercard"  *ngIf="card.cardBrand === 'mastercard'"></i>
+        <i class="fab fa-cc-amex"        *ngIf="card.cardBrand === 'amex'"></i>
+        <i class="fas fa-credit-card"    *ngIf="card.cardBrand !== 'visa' && card.cardBrand !== 'mastercard' && card.cardBrand !== 'amex'"></i>
+      </div>
+      <div class="card-info">
+        <span class="card-label">{{ card.label }}</span>
+        <span class="card-number">•••• •••• •••• {{ card.last4Digits }}</span>
+        <span class="card-expiry" *ngIf="card.expiryDate">
+          Expires {{ card.expiryDate | date:'MM/yy' }}
+        </span>
+        <span class="badge expired" *ngIf="card.isExpired">Expired</span>
+        <span class="badge default" *ngIf="card.isDefault">Default</span>
+      </div>
+      <div class="card-actions">
+        <button class="btn-set-default" *ngIf="!card.isDefault" (click)="setDefault(card.id)">
+          Set Default
+        </button>
+        <button class="btn-remove" (click)="removeCard(card.id)">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="paymentMethods.length === 0">
+      <i class="fas fa-credit-card"></i>
+      <p>No saved cards yet.</p>
+    </div>
+  </div>
+
+  <div class="loading" *ngIf="isLoading">
+    <i class="fas fa-spinner fa-spin"></i> Loading...
+  </div>
+
+  <!-- Add new card button -->
+  <button class="btn-add-card" *ngIf="!showAddForm" (click)="showAddForm = true">
+    <i class="fas fa-plus"></i> Add New Card
+  </button>
+
+  <!-- Add card form -->
+  <div class="add-card-form" *ngIf="showAddForm">
+    <h2>Add Credit / Debit Card</h2>
+
+    <!-- Visual card preview -->
+    <div class="card-preview" [class.visa]="cardBrand === 'visa'" [class.mc]="cardBrand === 'mastercard'" [class.amex]="cardBrand === 'amex'">
+      <div class="card-preview-brand">
+        <i class="fab fa-cc-visa"       *ngIf="cardBrand === 'visa'"></i>
+        <i class="fab fa-cc-mastercard" *ngIf="cardBrand === 'mastercard'"></i>
+        <i class="fab fa-cc-amex"       *ngIf="cardBrand === 'amex'"></i>
+        <i class="fas fa-credit-card"   *ngIf="cardBrand === 'unknown'"></i>
+      </div>
+      <div class="card-preview-number">
+        {{ cardNumber || '•••• •••• •••• ••••' }}
+      </div>
+      <div class="card-preview-footer">
+        <span>{{ cardHolder || 'CARD HOLDER' }}</span>
+        <span>{{ expiryMonth && expiryYear ? (expiryMonth + '/' + expiryYear) : 'MM/YY' }}</span>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Card Number</label>
+        <input type="text" [(ngModel)]="cardNumber" (input)="formatCardNumber($event)"
+               placeholder="1234 5678 9012 3456" maxlength="19" autocomplete="cc-number">
+      </div>
+
+      <div class="form-group full">
+        <label>Cardholder Name</label>
+        <input type="text" [(ngModel)]="cardHolder" placeholder="Name as on card"
+               autocomplete="cc-name" maxlength="60">
+      </div>
+
+      <div class="form-group">
+        <label>Expiry Month</label>
+        <input type="text" [(ngModel)]="expiryMonth" placeholder="MM" maxlength="2" autocomplete="cc-exp-month">
+      </div>
+
+      <div class="form-group">
+        <label>Expiry Year</label>
+        <input type="text" [(ngModel)]="expiryYear" placeholder="YY" maxlength="2" autocomplete="cc-exp-year">
+      </div>
+
+      <div class="form-group">
+        <label>CVV</label>
+        <input type="password" [(ngModel)]="cvv" placeholder="•••" maxlength="4" autocomplete="cc-csc">
+      </div>
+
+      <div class="form-group full">
+        <label>Card Label <small>(e.g. My Visa, Business Card)</small></label>
+        <input type="text" [(ngModel)]="cardLabel" placeholder="My Card" maxlength="50">
+      </div>
+
+      <div class="form-group full checkbox-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="setAsDefault">
+          Set as default payment method
+        </label>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-cancel" (click)="cancelAdd()">Cancel</button>
+      <button class="btn-submit" [disabled]="!isFormValid || isAdding" (click)="submitCard()">
+        <span *ngIf="!isAdding"><i class="fas fa-lock"></i> Save Card</span>
+        <span *ngIf="isAdding"><i class="fas fa-spinner fa-spin"></i> Saving...</span>
+      </button>
+    </div>
+
+    <p class="security-note">
+      <i class="fas fa-shield-alt"></i>
+      Your card details are stored securely. CVV is never saved.
+    </p>
+  </div>
+</div>

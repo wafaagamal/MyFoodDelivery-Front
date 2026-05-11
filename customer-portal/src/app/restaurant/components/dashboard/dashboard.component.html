@@ -1,0 +1,111 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>Dashboard</h1>
+    <span class="date">{{ today | date:'EEEE, MMMM d, yyyy' }}</span>
+  </div>
+  
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card orders">
+      <div class="stat-icon">
+        <i class="fas fa-receipt"></i>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ todayOrders }}</span>
+        <span class="stat-label">Today's Orders</span>
+        <span class="stat-change positive">
+          <i class="fas fa-arrow-up"></i> +12% vs yesterday
+        </span>
+      </div>
+    </div>
+    
+    <div class="stat-card revenue">
+      <div class="stat-icon">
+        <i class="fas fa-dollar-sign"></i>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">${{ todayRevenue | number:'1.2-2' }}</span>
+        <span class="stat-label">Today's Revenue</span>
+        <span class="stat-change positive">
+          <i class="fas fa-arrow-up"></i> +8% vs yesterday
+        </span>
+      </div>
+    </div>
+    
+    <div class="stat-card pending">
+      <div class="stat-icon">
+        <i class="fas fa-clock"></i>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ pendingOrders }}</span>
+        <span class="stat-label">Pending Orders</span>
+        <a routerLink="/restaurant/orders" class="view-link">View All →</a>
+      </div>
+    </div>
+    
+    <div class="stat-card rating">
+      <div class="stat-icon">
+        <i class="fas fa-star"></i>
+      </div>
+      <div class="stat-content">
+        <span class="stat-value">{{ averageRating }}</span>
+        <span class="stat-label">Average Rating</span>
+        <span class="stat-sub">from {{ totalReviews }} reviews</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Recent Orders -->
+  <div class="dashboard-section">
+    <div class="section-header">
+      <h2>Recent Orders</h2>
+      <a routerLink="/restaurant/orders" class="view-all">View All</a>
+    </div>
+    <div class="orders-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of recentOrders">
+            <td class="order-id">#{{ order.id }}</td>
+            <td>{{ order.customer }}</td>
+            <td>{{ order.items }} items</td>
+            <td class="amount">${{ order.total | number:'1.2-2' }}</td>
+            <td>
+              <span class="status-badge" [class]="order.status.toLowerCase()">
+                {{ order.status }}
+              </span>
+            </td>
+            <td class="time">{{ order.time }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Popular Items -->
+  <div class="dashboard-section">
+    <div class="section-header">
+      <h2>Top Selling Items</h2>
+      <a routerLink="/restaurant/menu" class="view-all">Manage Menu</a>
+    </div>
+    <div class="items-grid">
+      <div class="item-card" *ngFor="let item of popularItems">
+        <img [src]="item.image" [alt]="item.name">
+        <div class="item-info">
+          <h4>{{ item.name }}</h4>
+          <span class="item-sold">{{ item.sold }} sold today</span>
+          <span class="item-price">${{ item.price | number:'1.2-2' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
