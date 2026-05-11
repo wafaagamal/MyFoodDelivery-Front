@@ -26,14 +26,21 @@ export * from '../models/delivery.models';
   providedIn: 'root'
 })
 export class DeliveryService {
-  private readonly riderApiUrl = `${environment.deliveryApiUrl}/api/app/rider`;
-  private readonly taskApiUrl = `${environment.deliveryApiUrl}/api/app/delivery-task`;
+  private readonly riderApiUrl = `${environment.deliveryApiUrl}/api/riders`;
+  private readonly taskApiUrl = `${environment.deliveryApiUrl}/api/delivery-tasks`;
 
   constructor(private http: HttpClient) {}
 
   // Get current authenticated rider profile
   getMyRider(): Observable<Rider | null> {
     return this.http.get<Rider>(`${this.riderApiUrl}/my`).pipe(
+      catchError(() => of(null))
+    );
+  }
+
+  // Register current user as a rider (idempotent)
+  registerMyRider(): Observable<Rider | null> {
+    return this.http.post<Rider>(`${this.riderApiUrl}/my`, {}).pipe(
       catchError(() => of(null))
     );
   }
@@ -70,17 +77,23 @@ export class DeliveryService {
 
   // Update rider online/offline status
   updateStatus(riderId: string, isOnline: boolean): Observable<void> {
-    return this.http.put<void>(`${this.riderApiUrl}/${riderId}/status`, {
-      status: isOnline ? RiderStatus.Available : RiderStatus.Offline
-    });
+    return this.http.patch<void>(`${this.riderApiUrl}/${riderId}/status`, { isOnline });
   }
 
   // Get available deliveries for current rider
   getAvailableDeliveries(): Observable<AvailableDelivery[]> {
-    return this.http.get<AvailableDelivery[] | { items: AvailableDelivery[] }>(
-      `${this.taskApiUrl}/available`
-    ).pipe(
-      map(res => Array.isArray(res) ? res : ((res as any).items || [])),
+    return this.http.get<any[]>(`${this.taskApiUrl}/available`).pipe(
+      map(tasks => (tasks || []).map((task: any) => ({
+        id: task.id,
+        restaurantName: 'Order #' + (task.orderId || '').substring(0, 8).toUpperCase(),
+        restaurantLogo: undefined,
+        restaurantDistance: 'N/A',
+        pickupAddress: task.pickupAddress,
+        dropoffAddress: task.deliveryAddress,
+        totalDistance: 'N/A',
+        estimatedTime: task.estimatedMinutes || 30,
+        earning: 0
+      } as AvailableDelivery))),
       catchError(() => of([]))
     );
   }
@@ -94,22 +107,35 @@ export class DeliveryService {
 
   // Get current active delivery task
   getCurrentDelivery(): Observable<CurrentDelivery | null> {
-    return this.http.get<DeliveryTask | null>(`${this.taskApiUrl}/my/active`).pipe(
+    return this.http.get<any>(`${this.taskApiUrl}/my/active`).pipe(
       map(task => {
         if (!task) return null;
+        const statusStr = this.numericToStatusString(task.status);
         return {
           id: task.id,
-          orderId: task.orderNumber || task.orderId,
-          status: task.status,
-          step: this.statusToStep(task.status),
-          restaurantName: task.restaurantName,
-          customerName: task.customerName,
-          pickupAddress: task.restaurantAddress,
+          orderId: task.orderId,
+          status: statusStr,
+          step: this.statusToStep(statusStr),
+          restaurantName: task.restaurantName || 'Restaurant',
+          customerName: task.customerName || 'Customer',
+          pickupAddress: task.pickupAddress,
           dropoffAddress: task.deliveryAddress
-        };
+        } as CurrentDelivery;
       }),
       catchError(() => of(null))
     );
+  }
+
+  private numericToStatusString(status: number | string): string {
+    if (typeof status === 'string') return status;
+    const map: { [k: number]: string } = {
+      0: DeliveryTaskStatus.Pending,
+      1: DeliveryTaskStatus.Assigned,
+      2: DeliveryTaskStatus.PickedUp,
+      3: DeliveryTaskStatus.Delivered,
+      4: DeliveryTaskStatus.Cancelled
+    };
+    return map[status] ?? DeliveryTaskStatus.Pending;
   }
 
   private statusToStep(status: string): number {
@@ -140,12 +166,12 @@ export class DeliveryService {
 
   // Confirm pickup of an order
   pickupDelivery(taskId: string): Observable<void> {
-    return this.http.post<void>(`${this.taskApiUrl}/${taskId}/pickup`, {});
+    return this.http.post<void>(`${this.taskApiUrl}/${taskId}/picked-up`, {});
   }
 
   // Mark delivery as completed
   completeDelivery(taskId: string): Observable<void> {
-    return this.http.post<void>(`${this.taskApiUrl}/${taskId}/complete`, {});
+    return this.http.post<void>(`${this.taskApiUrl}/${taskId}/delivered`, {});
   }
 
   // Get delivery history (my completed/cancelled tasks)
@@ -164,18 +190,18 @@ export class DeliveryService {
     );
   }
 
-  private taskToHistory(task: DeliveryTask): DeliveryHistory {
+  private taskToHistory(task: any): DeliveryHistory {
     return {
       id: task.id,
       orderId: task.orderId,
-      restaurantName: task.restaurantName,
-      customerName: task.customerName,
-      pickupAddress: task.restaurantAddress,
+      restaurantName: task.restaurantName || 'Restaurant',
+      customerName: task.customerName || 'Customer',
+      pickupAddress: task.pickupAddress,
       dropoffAddress: task.deliveryAddress,
-      status: task.status,
-      earning: task.earning,
-      tip: task.tip,
-      completedAt: task.completedTime ? new Date(task.completedTime) : undefined,
+      status: this.numericToStatusString(task.status),
+      earning: task.earning ?? 0,
+      tip: task.tip ?? 0,
+      completedAt: task.deliveredAt ? new Date(task.deliveredAt) : undefined,
       createdAt: new Date(task.creationTime)
     };
   }

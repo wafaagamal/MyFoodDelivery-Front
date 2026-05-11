@@ -64,6 +64,11 @@ export const routes: Routes = [
         path: 'cart',
         loadComponent: () => import('./customer/components/cart/cart.component')
           .then(m => m.CartComponent)
+      },
+      {
+        path: 'addresses',
+        loadComponent: () => import('./customer/components/address-management/address-management.component')
+          .then(m => m.AddressManagementComponent)
       }
     ]
   },

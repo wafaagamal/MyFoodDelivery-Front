@@ -31,15 +31,28 @@ export class DeliveryHomeComponent implements OnInit {
     this.loading = true;
     this.deliveryService.getMyRider().subscribe({
       next: rider => {
-        this.loading = false;
         if (rider) {
+          this.loading = false;
           this.riderId = rider.id;
           this.isOnline = rider.isOnline;
           this.loadAvailableDeliveries();
           this.loadTodaySummary();
           this.loadCurrentDelivery();
         } else {
-          this.toast.error('No rider profile found for your account.');
+          // Auto-register rider profile on first login
+          this.deliveryService.registerMyRider().subscribe({
+            next: newRider => {
+              this.loading = false;
+              if (newRider) {
+                this.riderId = newRider.id;
+                this.isOnline = newRider.isOnline;
+              }
+            },
+            error: () => {
+              this.loading = false;
+              this.toast.error('Failed to create rider profile.');
+            }
+          });
         }
       },
       error: () => {

@@ -57,8 +57,9 @@ export class DeliveryDetailComponent implements OnInit {
       next: task => {
         this.loading = false;
         if (task) {
-          this.rawStatus = task.status;
-          this.delivery = this.toDisplay(task);
+          const statusStr = this.numericToStatusString((task as any).status);
+          this.rawStatus = statusStr;
+          this.delivery = this.toDisplay(task as any, statusStr);
         } else {
           this.loadError = true;
         }
@@ -71,23 +72,35 @@ export class DeliveryDetailComponent implements OnInit {
     });
   }
 
-  private toDisplay(task: DeliveryTask): DeliveryDisplay {
+  private numericToStatusString(status: number | string): string {
+    if (typeof status === 'string') return status;
+    const map: { [k: number]: string } = {
+      0: DeliveryTaskStatus.Pending,
+      1: DeliveryTaskStatus.Assigned,
+      2: DeliveryTaskStatus.PickedUp,
+      3: DeliveryTaskStatus.Delivered,
+      4: DeliveryTaskStatus.Cancelled
+    };
+    return map[status] ?? DeliveryTaskStatus.Pending;
+  }
+
+  private toDisplay(task: any, statusStr: string): DeliveryDisplay {
     return {
       id: task.id,
       orderId: task.orderNumber || task.orderId,
-      status: this.normalizeStatus(task.status),
-      statusClass: this.statusClass(task.status),
+      status: this.normalizeStatus(statusStr),
+      statusClass: this.statusClass(statusStr),
       date: new Date(task.creationTime).toLocaleString(),
-      restaurantName: task.restaurantName,
+      restaurantName: task.restaurantName || 'Restaurant',
       restaurantLogo: task.restaurantLogoUrl || '',
-      pickupAddress: task.restaurantAddress,
-      dropoffAddress: task.deliveryAddress,
-      customerName: task.customerName,
-      customerPhone: task.customerPhone,
-      items: (task.items || []).map(i => ({ qty: i.quantity, name: i.name, price: i.unitPrice })),
-      basePay: task.earning,
+      pickupAddress: task.pickupAddress || task.restaurantAddress || '',
+      dropoffAddress: task.deliveryAddress || '',
+      customerName: task.customerName || 'Customer',
+      customerPhone: task.customerPhone || '',
+      items: (task.items || []).map((i: any) => ({ qty: i.quantity, name: i.name, price: i.unitPrice })),
+      basePay: task.earning ?? 0,
       distanceBonus: 0,
-      tip: task.tip
+      tip: task.tip ?? 0
     };
   }
 

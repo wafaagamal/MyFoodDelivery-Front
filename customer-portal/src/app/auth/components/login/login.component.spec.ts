@@ -5,12 +5,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError, delay, BehaviorSubject } from 'rxjs';
 import { LoginComponent } from './login.component';
 import { AuthService, AuthResponse, UserRole } from '../../services/auth.service';
+import { LocalizationService } from '../../../shared/services/localization.service';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let mockAuthService: jasmine.SpyObj<AuthService>;
-  let mockRouter: jasmine.SpyObj<Router>;
+  let mockLocalization: jasmine.SpyObj<LocalizationService>;
+  let mockRouter: Router;
   let queryParamsSubject: BehaviorSubject<any>;
 
   const mockAuthResponse: AuthResponse = {
@@ -19,10 +21,48 @@ describe('LoginComponent', () => {
     expiresIn: 3600
   };
 
+  const mockTranslations: Record<string, any> = {
+    'auth.login': {
+      title: 'Welcome Back',
+      subtitle: 'Sign in to continue',
+      loginAs: 'Login as',
+      emailLabel: 'Email',
+      emailPlaceholder: 'Enter your email',
+      passwordLabel: 'Password',
+      passwordPlaceholder: 'Enter your password',
+      forgotPassword: 'Forgot Password?',
+      signInButton: 'Sign In as {{role}}',
+      signingIn: 'Signing in...',
+      noAccount: "Don't have an account?",
+      registerLink: 'Register'
+    },
+    'roles': {
+      customer: 'Customer',
+      restaurant: 'Restaurant',
+      driver: 'Driver'
+    },
+    'auth.errors.emailRequired': 'Please enter email and password',
+    'auth.errors.invalidCredentials': 'Invalid email or password'
+  };
+
   beforeEach(async () => {
     mockAuthService = jasmine.createSpyObj('AuthService', ['login', 'navigateToRolePortal']);
-    mockRouter = jasmine.createSpyObj('Router', ['navigateByUrl']);
+    mockLocalization = jasmine.createSpyObj('LocalizationService', ['loadTranslations', 'get']);
     queryParamsSubject = new BehaviorSubject<any>({});
+
+    // Set default return value for login
+    mockAuthService.login.and.returnValue(of(mockAuthResponse));
+    
+    // Mock localization
+    mockLocalization.loadTranslations.and.returnValue(of(mockTranslations));
+    mockLocalization.get.and.callFake((key: string) => {
+      const keys = key.split('.');
+      let result: any = mockTranslations;
+      for (const k of keys) {
+        result = result?.[k];
+      }
+      return result;
+    });
 
     await TestBed.configureTestingModule({
       imports: [
@@ -32,7 +72,7 @@ describe('LoginComponent', () => {
       ],
       providers: [
         { provide: AuthService, useValue: mockAuthService },
-        { provide: Router, useValue: mockRouter },
+        { provide: LocalizationService, useValue: mockLocalization },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -45,6 +85,7 @@ describe('LoginComponent', () => {
       ]
     }).compileComponents();
 
+    mockRouter = TestBed.inject(Router) as jasmine.SpyObj<Router>;
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

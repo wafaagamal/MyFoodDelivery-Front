@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService, JwtPayload } from '../../auth/services/auth.service';
+import { AuthService } from '../../auth/services/auth.service';
+import { DeliveryService } from '../../delivery/services/delivery.service';
 
 @Component({
   selector: 'app-delivery-layout',
@@ -11,27 +12,33 @@ import { AuthService, JwtPayload } from '../../auth/services/auth.service';
   styleUrls: ['./delivery-layout.component.scss']
 })
 export class DeliveryLayoutComponent implements OnInit {
-  isOnline = true;
+  isOnline = false;
   menuOpen = false;
-  todayDeliveries = 8;
-  todayEarnings = 127.50;
-  rating = 4.9;
-  activeDelivery = true;
-  riderName = 'John Smith';
-  riderId = 'RD-12345';
+  todayDeliveries = 0;
+  todayEarnings = 0;
+  rating = 0;
+  activeDelivery = false;
+  riderName = '';
+  riderId = '';
   riderPhoto = 'https://via.placeholder.com/60';
-  currentUser: JwtPayload | null = null;
 
   constructor(
     private authService: AuthService,
+    private deliveryService: DeliveryService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.currentUser = this.authService.getCurrentUser();
-    if (this.currentUser?.firstName) {
-      this.riderName = this.currentUser.firstName + (this.currentUser.lastName ? ' ' + this.currentUser.lastName : '');
-    }
+    this.riderName = this.authService.getDisplayName();
+    this.deliveryService.getMyRider().subscribe(rider => {
+      if (rider) {
+        this.riderId = 'RD-' + rider.id.replace(/-/g, '').substring(0, 8).toUpperCase();
+        this.isOnline = rider.isOnline;
+        this.todayDeliveries = rider.totalDeliveries;
+        this.todayEarnings = rider.totalEarnings;
+        this.rating = rider.averageRating;
+      }
+    });
   }
 
   toggleOnlineStatus(): void {

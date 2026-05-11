@@ -91,15 +91,19 @@ export class DeliveryProfileComponent implements OnInit {
   }
 
   private loadProfile(): void {
+    const jwtUser = this.authService.getCurrentUser();
+    const displayName = this.authService.getDisplayName();
+    const [jwtFirst = '', jwtLast = ''] = displayName.split(' ');
+
     this.deliveryService.getMyRider().subscribe({
       next: rider => {
         if (rider) {
           this.profile = {
             id: rider.id,
-            firstName: rider.firstName,
-            lastName: rider.lastName,
-            email: rider.email,
-            phone: rider.phoneNumber,
+            firstName: jwtUser?.given_name || jwtUser?.firstName || jwtFirst || '',
+            lastName: jwtUser?.family_name || jwtUser?.lastName || jwtLast || '',
+            email: jwtUser?.email || '',
+            phone: '',
             avatar: '',
             rating: rider.averageRating || 0,
             totalReviews: rider.ratingCount || 0,

@@ -17,7 +17,7 @@
     <div
       *ngFor="let order of activeOrders"
       class="order-card active"
-      [routerLink]="['/orders', order.id, 'tracking']">
+      [routerLink]="['/customer/orders', order.id, 'tracking']">
       <div class="order-icon">
         <i class="fas fa-fire-alt"></i>
       </div>
@@ -89,7 +89,7 @@
     <div
       *ngFor="let order of pastOrders"
       class="order-card"
-      [routerLink]="['/orders', order.id, 'tracking']">
+      [routerLink]="['/customer/orders', order.id, 'tracking']">
       <div class="order-image">
         <img
           [src]="order.restaurantLogo || 'assets/restaurant-placeholder.svg'"

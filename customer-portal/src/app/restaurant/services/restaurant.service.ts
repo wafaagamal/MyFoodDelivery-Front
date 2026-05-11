@@ -260,7 +260,9 @@ export class RestaurantService {
     imageUrl?: string; preparationTimeMinutes: number;
     isVegetarian: boolean; isVegan: boolean; isGlutenFree: boolean; isSpicy: boolean; allergens: string[];
   }): Observable<{ id: string; name: string; price: number; description: string; isAvailable: boolean }> {
-    return this.http.post<{ id: string; name: string; price: number; description: string; isAvailable: boolean }>(`${this.restaurantApiUrl}/${restaurantId}/menu/items`, item);
+    return this.http.post<string>(`${this.restaurantApiUrl}/${restaurantId}/menu/items`, item).pipe(
+      map(id => ({ id, name: item.name, price: item.price, description: item.description, isAvailable: true }))
+    );
   }
 
   updateMenuItem(restaurantId: string, itemId: string, item: {

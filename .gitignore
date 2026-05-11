@@ -13,6 +13,7 @@ out-tsc/
 # IDE
 .idea/
 .vscode/
+.vs/
 *.suo
 *.ntvs*
 *.njsproj

@@ -93,7 +93,7 @@
   <div class="addresses-list">
     <div 
       class="address-card" 
-      *ngFor="let address of addresses$ | async"
+      *ngFor="let address of addresses"
       [class.default]="address.isDefault">
       <div class="address-header">
         <span class="label">{{ address.label }}</span>
@@ -122,7 +122,7 @@
       </div>
     </div>
 
-    <div class="empty-state" *ngIf="(addresses$ | async)?.length === 0">
+    <div class="empty-state" *ngIf="addresses.length === 0">
       <div class="icon">📍</div>
       <h3>No addresses yet</h3>
       <p>Add your first delivery address to start ordering</p>

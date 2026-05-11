@@ -76,7 +76,7 @@
       <button class="close-btn" (click)="closeOrderDetail()"><i class="fas fa-times"></i></button>
     </div>
     <div class="modal-body">
-      <p><strong>Customer:</strong> {{ selectedOrder.customer || 'N/A' }}</p>
+      <p><strong>Customer:</strong> {{ selectedOrder.customer || 'Customer' }}</p>
       <p *ngIf="selectedOrder.phone"><strong>Phone:</strong> {{ selectedOrder.phone }}</p>
       <p><strong>Time:</strong> {{ selectedOrder.time }}</p>
       <p><strong>Status:</strong> {{ selectedOrder.statusLabel }}</p>

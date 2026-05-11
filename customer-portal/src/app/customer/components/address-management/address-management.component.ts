@@ -1,16 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Store, Select } from '@ngxs/store';
-import { Observable } from 'rxjs';
-import { 
-  CustomerState, 
-  LoadAddresses, 
-  AddAddress, 
-  RemoveAddress, 
-  SetDefaultAddress 
-} from '../../state/customer.state';
 import { DeliveryAddress } from '../../models/customer.models';
+import { CustomerService } from '../../services/customer.service';
 import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
@@ -21,14 +13,14 @@ import { ToastService } from '../../../shared/services/toast.service';
   styleUrls: ['./address-management.component.scss']
 })
 export class AddressManagementComponent implements OnInit {
-  @Select(CustomerState.addresses) addresses$!: Observable<DeliveryAddress[]>;
+  addresses: DeliveryAddress[] = [];
 
   addressForm!: FormGroup;
   showAddForm = false;
   editingAddress: DeliveryAddress | null = null;
 
   constructor(
-    private store: Store,
+    private customerService: CustomerService,
     private fb: FormBuilder,
     private toast: ToastService
   ) {
@@ -36,7 +28,14 @@ export class AddressManagementComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.store.dispatch(new LoadAddresses());
+    this.loadAddresses();
+  }
+
+  private loadAddresses(): void {
+    this.customerService.getAddresses().subscribe({
+      next: (addresses) => { this.addresses = addresses; },
+      error: () => this.toast.error('Failed to load addresses.')
+    });
   }
 
   private initForm(): void {
@@ -44,28 +43,41 @@ export class AddressManagementComponent implements OnInit {
       label: ['', [Validators.required, Validators.maxLength(50)]],
       street: ['', [Validators.required, Validators.maxLength(200)]],
       buildingNumber: ['', [Validators.required, Validators.maxLength(20)]],
-      floor: [''],
-      apartment: [''],
+      floor: [null],
+      apartment: [null],
       city: ['', [Validators.required, Validators.maxLength(100)]],
-      district: [''],
+      district: [null],
       postalCode: ['', [Validators.required, Validators.maxLength(20)]],
       country: ['', [Validators.required, Validators.maxLength(100)]],
       latitude: [null],
       longitude: [null],
-      deliveryInstructions: [''],
+      deliveryInstructions: [null],
       isDefault: [false]
     });
   }
 
   onSubmit(): void {
     if (this.addressForm.valid) {
-      this.store.dispatch(new AddAddress(this.addressForm.value)).subscribe({
-        next: () => {
-          this.toast.success(this.editingAddress ? 'Address updated.' : 'Address added.');
-          this.cancelAdd();
-        },
-        error: () => this.toast.error('Failed to save address. Please try again.')
-      });
+      const request = this.addressForm.value;
+      if (this.editingAddress) {
+        this.customerService.updateAddress(this.editingAddress.id, request).subscribe({
+          next: () => {
+            this.toast.success('Address updated.');
+            this.cancelAdd();
+            this.loadAddresses();
+          },
+          error: () => this.toast.error('Failed to save address. Please try again.')
+        });
+      } else {
+        this.customerService.addAddress(request).subscribe({
+          next: () => {
+            this.toast.success('Address added.');
+            this.cancelAdd();
+            this.loadAddresses();
+          },
+          error: () => this.toast.error('Failed to save address. Please try again.')
+        });
+      }
     }
   }
 
@@ -96,18 +108,25 @@ export class AddressManagementComponent implements OnInit {
   }
 
   setDefault(addressId: string): void {
-    this.store.dispatch(new SetDefaultAddress(addressId)).subscribe({
-      next: () => this.toast.success('Default address updated.'),
+    this.customerService.setDefaultAddress(addressId).subscribe({
+      next: () => {
+        this.toast.success('Default address updated.');
+        this.loadAddresses();
+      },
       error: () => this.toast.error('Failed to set default address.')
     });
   }
 
   removeAddress(addressId: string): void {
     if (confirm('Are you sure you want to remove this address?')) {
-      this.store.dispatch(new RemoveAddress(addressId)).subscribe({
-        next: () => this.toast.success('Address removed.'),
+      this.customerService.removeAddress(addressId).subscribe({
+        next: () => {
+          this.toast.success('Address removed.');
+          this.loadAddresses();
+        },
         error: () => this.toast.error('Failed to remove address.')
       });
     }
   }
 }
+

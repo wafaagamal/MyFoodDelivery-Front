@@ -13,8 +13,8 @@ const DEFAULT_LAT = 30.0550;
 const DEFAULT_LNG = 31.2345;
 const DEFAULT_ZOOM = 12;
 
-function validCoord(lat: number, lng: number): boolean {
-  return lat !== 0 || lng !== 0;
+function validCoord(lat: number | null | undefined, lng: number | null | undefined): boolean {
+  return lat != null && lng != null && (lat !== 0 || lng !== 0);
 }
 
 @Component({
@@ -124,8 +124,8 @@ export class OrderTrackingComponent implements OnInit, OnDestroy {
       const lat = this.tracking?.deliveryLocation?.latitude;
       const lng = this.tracking?.deliveryLocation?.longitude;
       const centre: [number, number] =
-        (lat !== undefined && lng !== undefined && validCoord(lat, lng))
-          ? [lat, lng]
+        (validCoord(lat, lng))
+          ? [lat!, lng!]
           : [DEFAULT_LAT, DEFAULT_LNG];
 
       this.map = L.map('tracking-map').setView(centre, DEFAULT_ZOOM);
