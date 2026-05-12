@@ -28,11 +28,15 @@
     <ng-container *ngIf="editing">
       <div class="form-group">
         <label>First Name</label>
-        <input type="text" [(ngModel)]="profile.firstName" class="form-control" placeholder="First name">
+        <input type="text" [(ngModel)]="profile.firstName" class="form-control" placeholder="First name"
+          [class.field-error]="submitted && !profile.firstName.trim()">
+        <div class="field-error-msg" *ngIf="submitted && !profile.firstName.trim()">First name is required</div>
       </div>
       <div class="form-group">
         <label>Last Name</label>
-        <input type="text" [(ngModel)]="profile.lastName" class="form-control" placeholder="Last name">
+        <input type="text" [(ngModel)]="profile.lastName" class="form-control" placeholder="Last name"
+          [class.field-error]="submitted && !profile.lastName.trim()">
+        <div class="field-error-msg" *ngIf="submitted && !profile.lastName.trim()">Last name is required</div>
       </div>
     </ng-container>
 

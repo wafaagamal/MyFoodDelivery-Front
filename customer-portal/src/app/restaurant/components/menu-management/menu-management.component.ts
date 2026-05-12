@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { RestaurantService, MenuItem, MenuCategory } from '../../services/restaurant.service';
 
 interface MenuItemDisplay {
@@ -25,6 +26,7 @@ export class MenuManagementComponent implements OnInit {
   showAddModal = false;
   activeCategory = 'All';
   editingItem: MenuItemDisplay | null = null;
+  menuFormSubmitted = false;
   
   categories: string[] = ['All'];
   categoriesForSelect: { id: string; name: string }[] = [];
@@ -42,7 +44,9 @@ export class MenuManagementComponent implements OnInit {
   private restaurantId = '';
   private categoryMap: Map<string, string> = new Map();
 
-  constructor(private restaurantService: RestaurantService) {}
+  constructor(private restaurantService: RestaurantService, private router: Router) {}
+
+  goBack(): void { this.router.navigate(['/restaurant/dashboard']); }
 
   ngOnInit(): void {
     this.loadRestaurantData();
@@ -115,6 +119,7 @@ export class MenuManagementComponent implements OnInit {
   closeModal(): void {
     this.showAddModal = false;
     this.editingItem = null;
+    this.menuFormSubmitted = false;
     this.resetForm();
   }
 
@@ -136,6 +141,7 @@ export class MenuManagementComponent implements OnInit {
   }
 
   saveItem(): void {
+    this.menuFormSubmitted = true;
     if (!this.isFormValid()) return;
 
     if (this.editingItem) {

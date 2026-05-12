@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { RestaurantService } from '../../services/restaurant.service';
 
 interface DailyRevenue { label: string; value: number; }
@@ -34,7 +35,9 @@ export class RestaurantAnalyticsComponent implements OnInit {
 
   private restaurantId = '';
 
-  constructor(private restaurantService: RestaurantService) {}
+  constructor(private restaurantService: RestaurantService, private router: Router) {}
+
+  goBack(): void { this.router.navigate(['/restaurant/dashboard']); }
 
   ngOnInit(): void {
     this.restaurantService.getRestaurants().subscribe(restaurants => {

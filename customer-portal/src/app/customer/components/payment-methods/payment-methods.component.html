@@ -74,33 +74,61 @@
       <div class="form-group full">
         <label>Card Number</label>
         <input type="text" [(ngModel)]="cardNumber" (input)="formatCardNumber($event)"
-               placeholder="1234 5678 9012 3456" maxlength="19" autocomplete="cc-number">
+               placeholder="1234 5678 9012 3456" maxlength="19" autocomplete="cc-number"
+               [class.field-error]="cardSubmitted && cardNumber.replace(' ','').length < 15">
+        <div class="field-error-msg" *ngIf="cardSubmitted && cardNumber.replace(/\s/g,'').length < 15">
+          <span *ngIf="!cardNumber">Card number is required</span>
+          <span *ngIf="cardNumber && cardNumber.replace(/\s/g,'').length < 15">Enter a valid card number (15-16 digits)</span>
+        </div>
       </div>
 
       <div class="form-group full">
         <label>Cardholder Name</label>
         <input type="text" [(ngModel)]="cardHolder" placeholder="Name as on card"
-               autocomplete="cc-name" maxlength="60">
+               autocomplete="cc-name" maxlength="60"
+               [class.field-error]="cardSubmitted && cardHolder.trim().length < 2">
+        <div class="field-error-msg" *ngIf="cardSubmitted && cardHolder.trim().length < 2">
+          <span *ngIf="!cardHolder.trim()">Cardholder name is required</span>
+          <span *ngIf="cardHolder.trim() && cardHolder.trim().length < 2">Name must be at least 2 characters</span>
+        </div>
       </div>
 
       <div class="form-group">
         <label>Expiry Month</label>
-        <input type="text" [(ngModel)]="expiryMonth" placeholder="MM" maxlength="2" autocomplete="cc-exp-month">
+        <input type="text" [(ngModel)]="expiryMonth" placeholder="MM" maxlength="2" autocomplete="cc-exp-month"
+               [class.field-error]="cardSubmitted && (!expiryMonth || +expiryMonth < 1 || +expiryMonth > 12)">
+        <div class="field-error-msg" *ngIf="cardSubmitted && (!expiryMonth || +expiryMonth < 1 || +expiryMonth > 12)">
+          <span *ngIf="!expiryMonth">Expiry month is required</span>
+          <span *ngIf="expiryMonth && (+expiryMonth < 1 || +expiryMonth > 12)">Enter a valid month (01–12)</span>
+        </div>
       </div>
 
       <div class="form-group">
         <label>Expiry Year</label>
-        <input type="text" [(ngModel)]="expiryYear" placeholder="YY" maxlength="2" autocomplete="cc-exp-year">
+        <input type="text" [(ngModel)]="expiryYear" placeholder="YY" maxlength="2" autocomplete="cc-exp-year"
+               [class.field-error]="cardSubmitted && !expiryYear">
+        <div class="field-error-msg" *ngIf="cardSubmitted && !expiryYear">
+          Expiry year is required
+        </div>
       </div>
 
       <div class="form-group">
         <label>CVV</label>
-        <input type="password" [(ngModel)]="cvv" placeholder="•••" maxlength="4" autocomplete="cc-csc">
+        <input type="password" [(ngModel)]="cvv" placeholder="•••" maxlength="4" autocomplete="cc-csc"
+               [class.field-error]="cardSubmitted && cvv.length < 3">
+        <div class="field-error-msg" *ngIf="cardSubmitted && cvv.length < 3">
+          <span *ngIf="!cvv">CVV is required</span>
+          <span *ngIf="cvv && cvv.length < 3">CVV must be 3–4 digits</span>
+        </div>
       </div>
 
       <div class="form-group full">
         <label>Card Label <small>(e.g. My Visa, Business Card)</small></label>
-        <input type="text" [(ngModel)]="cardLabel" placeholder="My Card" maxlength="50">
+        <input type="text" [(ngModel)]="cardLabel" placeholder="My Card" maxlength="50"
+               [class.field-error]="cardSubmitted && !cardLabel.trim()">
+        <div class="field-error-msg" *ngIf="cardSubmitted && !cardLabel.trim()">
+          Card label is required
+        </div>
       </div>
 
       <div class="form-group full checkbox-group">

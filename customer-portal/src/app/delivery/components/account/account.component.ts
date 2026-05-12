@@ -23,6 +23,7 @@ export class DeliveryAccountComponent implements OnInit {
 
   editing = false;
   saving = false;
+  submitted = false;
 
   constructor(
     private authService: AuthService,
@@ -46,9 +47,12 @@ export class DeliveryAccountComponent implements OnInit {
 
   toggleEdit(): void {
     this.editing = !this.editing;
+    if (!this.editing) this.submitted = false;
   }
 
   save(): void {
+    this.submitted = true;
+    if (!this.profile.firstName.trim() || !this.profile.lastName.trim()) return;
     this.saving = true;
     // Optimistic update - show success
     setTimeout(() => {

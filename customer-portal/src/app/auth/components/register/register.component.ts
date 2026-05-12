@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService, UserRole } from '../../services/auth.service';
 
@@ -22,7 +22,10 @@ export class RegisterComponent {
   error = '';
   showPassword = false;
   showConfirmPassword = false;
+  submitted = false;
   selectedRole: UserRole = UserRole.Customer;
+
+  @ViewChild('registerForm') registerForm!: NgForm;
 
   roles = [
     { value: UserRole.Customer, label: 'Customer', icon: 'fas fa-user', description: 'Order food from restaurants' },
@@ -52,6 +55,10 @@ export class RegisterComponent {
   }
 
   onSubmit(): void {
+    this.submitted = true;
+    if (this.registerForm && this.registerForm.invalid) {
+      return;
+    }
     if (!this.name || !this.email || !this.phone || !this.password) {
       this.error = 'Please fill in all fields';
       return;

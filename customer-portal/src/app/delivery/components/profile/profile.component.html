@@ -140,11 +140,15 @@
       <div class="form-row">
         <div class="form-group">
           <label>First Name</label>
-          <input type="text" [(ngModel)]="editForm.firstName" placeholder="First Name">
+          <input type="text" [(ngModel)]="editForm.firstName" placeholder="First Name"
+            [class.field-error]="profileSubmitted && !editForm.firstName.trim()">
+          <div class="field-error-msg" *ngIf="profileSubmitted && !editForm.firstName.trim()">First name is required</div>
         </div>
         <div class="form-group">
           <label>Last Name</label>
-          <input type="text" [(ngModel)]="editForm.lastName" placeholder="Last Name">
+          <input type="text" [(ngModel)]="editForm.lastName" placeholder="Last Name"
+            [class.field-error]="profileSubmitted && !editForm.lastName.trim()">
+          <div class="field-error-msg" *ngIf="profileSubmitted && !editForm.lastName.trim()">Last name is required</div>
         </div>
       </div>
       
@@ -156,7 +160,9 @@
       
       <div class="form-group">
         <label>Phone Number</label>
-        <input type="tel" [(ngModel)]="editForm.phone" placeholder="Phone Number">
+        <input type="tel" [(ngModel)]="editForm.phone" placeholder="Phone Number"
+          [class.field-error]="profileSubmitted && !editForm.phone.trim()">
+        <div class="field-error-msg" *ngIf="profileSubmitted && !editForm.phone.trim()">Phone number is required</div>
       </div>
     </div>
     <div class="modal-footer">
@@ -214,7 +220,9 @@
       
       <div class="form-group">
         <label>License Plate</label>
-        <input type="text" [(ngModel)]="vehicleForm.licensePlate" placeholder="ABC-1234">
+        <input type="text" [(ngModel)]="vehicleForm.licensePlate" placeholder="ABC-1234"
+          [class.field-error]="vehicleSubmitted && !vehicleForm.licensePlate.trim()">
+        <div class="field-error-msg" *ngIf="vehicleSubmitted && !vehicleForm.licensePlate.trim()">License plate is required</div>
       </div>
       
       <div class="info-box">

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { RestaurantService, OrderListItem, OrderDetail } from '../../services/restaurant.service';
 import { ToastService } from '../../../shared/services/toast.service';
 
@@ -55,8 +56,11 @@ export class RestaurantOrdersComponent implements OnInit {
 
   constructor(
     private restaurantService: RestaurantService,
-    private toast: ToastService
+    private toast: ToastService,
+    private router: Router
   ) {}
+
+  goBack(): void { this.router.navigate(['/restaurant/dashboard']); }
 
   ngOnInit(): void {
     this.restaurantService.getRestaurants().subscribe({

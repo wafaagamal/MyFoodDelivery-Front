@@ -152,6 +152,18 @@
   border-radius: 8px;
 }
 
+.field-error-msg {
+  font-size: 12px;
+  color: #c62828;
+  margin-top: 4px;
+}
+
+input.field-error,
+.password-wrapper.field-error,
+.phone-input-wrapper.field-error {
+  border-color: #c62828 !important;
+}
+
 .terms {
   display: flex;
   align-items: flex-start;

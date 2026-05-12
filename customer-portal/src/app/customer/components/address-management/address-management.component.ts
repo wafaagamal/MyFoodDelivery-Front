@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { DeliveryAddress } from '../../models/customer.models';
 import { CustomerService } from '../../services/customer.service';
 import { ToastService } from '../../../shared/services/toast.service';
@@ -18,14 +19,18 @@ export class AddressManagementComponent implements OnInit {
   addressForm!: FormGroup;
   showAddForm = false;
   editingAddress: DeliveryAddress | null = null;
+  submitted = false;
 
   constructor(
     private customerService: CustomerService,
     private fb: FormBuilder,
-    private toast: ToastService
+    private toast: ToastService,
+    private router: Router
   ) {
     this.initForm();
   }
+
+  goBack(): void { this.router.navigate(['/customer/profile']); }
 
   ngOnInit(): void {
     this.loadAddresses();
@@ -57,6 +62,7 @@ export class AddressManagementComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.submitted = true;
     if (this.addressForm.valid) {
       const request = this.addressForm.value;
       if (this.editingAddress) {
@@ -84,6 +90,7 @@ export class AddressManagementComponent implements OnInit {
   cancelAdd(): void {
     this.showAddForm = false;
     this.editingAddress = null;
+    this.submitted = false;
     this.addressForm.reset({ isDefault: false });
   }
 

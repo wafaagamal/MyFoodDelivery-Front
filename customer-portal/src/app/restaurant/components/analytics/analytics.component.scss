@@ -19,6 +19,22 @@
   margin: 0;
 }
 
+.back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: #f0f0f0;
+  color: #1a237e;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+  &:hover { background: #e0e0e0; }
+}
+
 .date-range {
   display: flex;
   gap: 0.25rem;

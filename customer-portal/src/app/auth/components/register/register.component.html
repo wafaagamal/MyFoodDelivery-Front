@@ -20,7 +20,7 @@
     </div>
   </div>
 
-  <form (ngSubmit)="onSubmit()" class="register-form" autocomplete="on">
+  <form (ngSubmit)="onSubmit()" #registerForm="ngForm" class="register-form" autocomplete="on" novalidate>
     <div class="form-group">
       <label for="name">Full Name</label>
       <input 
@@ -28,9 +28,18 @@
         id="name" 
         [(ngModel)]="name" 
         name="name"
+        #nameField="ngModel"
         autocomplete="name"
         placeholder="Enter your full name"
-        required>
+        [class.field-error]="nameField.invalid && (nameField.touched || submitted)"
+        required
+        minlength="2"
+        maxlength="100">
+      <div class="field-error-msg" *ngIf="nameField.invalid && (nameField.touched || submitted)">
+        <span *ngIf="nameField.errors?.['required']">Full name is required</span>
+        <span *ngIf="nameField.errors?.['minlength']">Name must be at least 2 characters</span>
+        <span *ngIf="nameField.errors?.['maxlength']">Name must not exceed 100 characters</span>
+      </div>
     </div>
 
     <div class="form-group">
@@ -40,54 +49,75 @@
         id="email" 
         [(ngModel)]="email" 
         name="email"
+        #emailField="ngModel"
         autocomplete="email"
         placeholder="Enter your email"
-        required>
+        [class.field-error]="emailField.invalid && (emailField.touched || submitted)"
+        required
+        email>
+      <div class="field-error-msg" *ngIf="emailField.invalid && (emailField.touched || submitted)">
+        <span *ngIf="emailField.errors?.['required']">Email is required</span>
+        <span *ngIf="emailField.errors?.['email']">Please enter a valid email address</span>
+      </div>
     </div>
 
     <div class="form-group">
       <label for="phone">Phone Number <span class="field-hint">(Egyptian number)</span></label>
-      <div class="phone-input-wrapper">
+      <div class="phone-input-wrapper" [class.field-error]="phoneField.invalid && (phoneField.touched || submitted)">
         <span class="phone-prefix">+20</span>
         <input 
           type="tel" 
           id="phone" 
           [(ngModel)]="phone" 
           name="phone"
+          #phoneField="ngModel"
           autocomplete="tel-national"
           placeholder="1xxxxxxxxx"
           maxlength="10"
-          required>
+          [class.field-error]="false"
+          required
+          pattern="^1[0125][0-9]{8}$">
       </div>
-      <small class="field-note">Enter your 10-digit Egyptian mobile number (e.g. 1012345678)</small>
+      <div class="field-error-msg" *ngIf="phoneField.invalid && (phoneField.touched || submitted)">
+        <span *ngIf="phoneField.errors?.['required']">Phone number is required</span>
+        <span *ngIf="phoneField.errors?.['pattern']">Enter a valid Egyptian mobile number (e.g. 1012345678)</span>
+      </div>
+      <small class="field-note" *ngIf="phoneField.valid || (!phoneField.touched && !submitted)">Enter your 10-digit Egyptian mobile number (e.g. 1012345678)</small>
     </div>
 
     <div class="form-group">
       <label for="password">Password</label>
-      <div class="password-wrapper">
+      <div class="password-wrapper" [class.field-error]="passwordField.invalid && (passwordField.touched || submitted)">
         <input 
           [type]="showPassword ? 'text' : 'password'" 
           id="password" 
           [(ngModel)]="password" 
           name="password"
+          #passwordField="ngModel"
           autocomplete="new-password"
           placeholder="Create a password"
-          required>
+          required
+          minlength="8">
         <button type="button" class="eye-btn" (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
           <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
         </button>
       </div>
+      <div class="field-error-msg" *ngIf="passwordField.invalid && (passwordField.touched || submitted)">
+        <span *ngIf="passwordField.errors?.['required']">Password is required</span>
+        <span *ngIf="passwordField.errors?.['minlength']">Password must be at least 8 characters</span>
+      </div>
     </div>
 
     <div class="form-group">
       <label for="confirmPassword">Confirm Password</label>
-      <div class="password-wrapper">
+      <div class="password-wrapper" [class.field-error]="confirmPasswordField.invalid && (confirmPasswordField.touched || submitted) || (confirmPassword && confirmPassword !== password)">
         <input 
           [type]="showConfirmPassword ? 'text' : 'password'" 
           id="confirmPassword" 
           [(ngModel)]="confirmPassword" 
           name="confirmPassword"
+          #confirmPasswordField="ngModel"
           autocomplete="new-password"
           placeholder="Confirm your password"
           required>
@@ -95,6 +125,12 @@
           <svg *ngIf="!showConfirmPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           <svg *ngIf="showConfirmPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
         </button>
+      </div>
+      <div class="field-error-msg" *ngIf="confirmPasswordField.invalid && (confirmPasswordField.touched || submitted)">
+        <span *ngIf="confirmPasswordField.errors?.['required']">Please confirm your password</span>
+      </div>
+      <div class="field-error-msg" *ngIf="confirmPasswordField.valid && confirmPassword && confirmPassword !== password && (confirmPasswordField.touched || submitted)">
+        <span>Passwords do not match</span>
       </div>
     </div>
 

@@ -21,6 +21,7 @@ export class PaymentMethodsComponent implements OnInit {
 
   showAddForm = false;
   isAdding = false;
+  cardSubmitted = false;
 
   // New card form fields
   cardNumber = '';
@@ -91,6 +92,7 @@ export class PaymentMethodsComponent implements OnInit {
   }
 
   submitCard(): void {
+    this.cardSubmitted = true;
     if (!this.isFormValid) return;
     this.isAdding = true;
 
@@ -141,6 +143,7 @@ export class PaymentMethodsComponent implements OnInit {
 
   cancelAdd(): void {
     this.showAddForm = false;
+    this.cardSubmitted = false;
     this.resetForm();
   }
 

@@ -1,6 +1,6 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { DeliveryService } from '../../services/delivery.service';
 import { DeliveryHistory, DeliveryTaskStatus } from '../../models/delivery.models';
 import { ToastService } from '../../../shared/services/toast.service';
@@ -41,8 +41,11 @@ export class DeliveriesComponent implements OnInit {
 
   constructor(
     private deliveryService: DeliveryService,
-    private toast: ToastService
+    private toast: ToastService,
+    private router: Router
   ) {}
+
+  goBack(): void { this.router.navigate(['/delivery/home']); }
 
   ngOnInit(): void {
     this.loadDeliveries();

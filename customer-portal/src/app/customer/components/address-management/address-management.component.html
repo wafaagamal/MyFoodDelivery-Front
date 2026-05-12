@@ -1,5 +1,6 @@
 <div class="addresses-container">
   <div class="header">
+    <button class="back-btn" (click)="goBack()"><i class="fas fa-arrow-left"></i></button>
     <h1>Delivery Addresses</h1>
     <button class="btn-add" (click)="showAddForm = true" *ngIf="!showAddForm">
       <span class="icon">+</span> Add Address
@@ -13,18 +14,32 @@
       <div class="form-row">
         <div class="form-group">
           <label for="label">Address Label *</label>
-          <input id="label" type="text" formControlName="label" placeholder="e.g., Home, Work">
+          <input id="label" type="text" formControlName="label" placeholder="e.g., Home, Work"
+            [class.field-error]="addressForm.get('label')?.invalid && (addressForm.get('label')?.touched || submitted)">
+          <div class="field-error-msg" *ngIf="addressForm.get('label')?.invalid && (addressForm.get('label')?.touched || submitted)">
+            <span *ngIf="addressForm.get('label')?.errors?.['required']">Address label is required</span>
+            <span *ngIf="addressForm.get('label')?.errors?.['maxlength']">Label must not exceed 50 characters</span>
+          </div>
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group flex-2">
           <label for="street">Street *</label>
-          <input id="street" type="text" formControlName="street" placeholder="Street name">
+          <input id="street" type="text" formControlName="street" placeholder="Street name"
+            [class.field-error]="addressForm.get('street')?.invalid && (addressForm.get('street')?.touched || submitted)">
+          <div class="field-error-msg" *ngIf="addressForm.get('street')?.invalid && (addressForm.get('street')?.touched || submitted)">
+            <span *ngIf="addressForm.get('street')?.errors?.['required']">Street is required</span>
+            <span *ngIf="addressForm.get('street')?.errors?.['maxlength']">Street must not exceed 200 characters</span>
+          </div>
         </div>
         <div class="form-group">
           <label for="buildingNumber">Building # *</label>
-          <input id="buildingNumber" type="text" formControlName="buildingNumber">
+          <input id="buildingNumber" type="text" formControlName="buildingNumber"
+            [class.field-error]="addressForm.get('buildingNumber')?.invalid && (addressForm.get('buildingNumber')?.touched || submitted)">
+          <div class="field-error-msg" *ngIf="addressForm.get('buildingNumber')?.invalid && (addressForm.get('buildingNumber')?.touched || submitted)">
+            <span *ngIf="addressForm.get('buildingNumber')?.errors?.['required']">Building number is required</span>
+          </div>
         </div>
       </div>
 
@@ -42,7 +57,11 @@
       <div class="form-row">
         <div class="form-group">
           <label for="city">City *</label>
-          <input id="city" type="text" formControlName="city">
+          <input id="city" type="text" formControlName="city"
+            [class.field-error]="addressForm.get('city')?.invalid && (addressForm.get('city')?.touched || submitted)">
+          <div class="field-error-msg" *ngIf="addressForm.get('city')?.invalid && (addressForm.get('city')?.touched || submitted)">
+            <span *ngIf="addressForm.get('city')?.errors?.['required']">City is required</span>
+          </div>
         </div>
         <div class="form-group">
           <label for="district">District</label>
@@ -53,11 +72,19 @@
       <div class="form-row">
         <div class="form-group">
           <label for="postalCode">Postal Code *</label>
-          <input id="postalCode" type="text" formControlName="postalCode">
+          <input id="postalCode" type="text" formControlName="postalCode"
+            [class.field-error]="addressForm.get('postalCode')?.invalid && (addressForm.get('postalCode')?.touched || submitted)">
+          <div class="field-error-msg" *ngIf="addressForm.get('postalCode')?.invalid && (addressForm.get('postalCode')?.touched || submitted)">
+            <span *ngIf="addressForm.get('postalCode')?.errors?.['required']">Postal code is required</span>
+          </div>
         </div>
         <div class="form-group">
           <label for="country">Country *</label>
-          <input id="country" type="text" formControlName="country">
+          <input id="country" type="text" formControlName="country"
+            [class.field-error]="addressForm.get('country')?.invalid && (addressForm.get('country')?.touched || submitted)">
+          <div class="field-error-msg" *ngIf="addressForm.get('country')?.invalid && (addressForm.get('country')?.touched || submitted)">
+            <span *ngIf="addressForm.get('country')?.errors?.['required']">Country is required</span>
+          </div>
         </div>
       </div>
 

@@ -78,6 +78,8 @@ export class DeliveryProfileComponent implements OnInit {
   };
 
   isSaving = false;
+  profileSubmitted = false;
+  vehicleSubmitted = false;
 
   constructor(
     private deliveryService: DeliveryService,
@@ -184,6 +186,8 @@ export class DeliveryProfileComponent implements OnInit {
   }
 
   saveProfile(): void {
+    this.profileSubmitted = true;
+    if (!this.editForm.firstName.trim() || !this.editForm.lastName.trim() || !this.editForm.phone.trim()) return;
     if (!this.profile.id) return;
     this.isSaving = true;
     this.deliveryService.updateProfile(this.profile.id, {
@@ -213,6 +217,8 @@ export class DeliveryProfileComponent implements OnInit {
   }
 
   saveVehicle(): void {
+    this.vehicleSubmitted = true;
+    if (!this.vehicleForm.licensePlate.trim()) return;
     if (!this.profile.id) return;
     this.isSaving = true;
     this.deliveryService.updateProfile(this.profile.id, {

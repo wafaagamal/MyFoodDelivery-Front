@@ -22,6 +22,7 @@ export class ForgotPasswordComponent {
   devToken = '';       // returned by backend in dev mode
   requestLoading = false;
   requestError = '';
+  requestSubmitted = false;
 
   // Step 2 – reset
   token = '';
@@ -29,12 +30,14 @@ export class ForgotPasswordComponent {
   confirmPassword = '';
   resetLoading = false;
   resetError = '';
+  resetSubmitted = false;
 
   private readonly authBase = environment.auth.authority;
 
   constructor(private http: HttpClient) {}
 
   onRequestSubmit(): void {
+    this.requestSubmitted = true;
     if (!this.email) { this.requestError = 'Please enter your email address.'; return; }
     this.requestLoading = true;
     this.requestError = '';
@@ -56,6 +59,7 @@ export class ForgotPasswordComponent {
   }
 
   onResetSubmit(): void {
+    this.resetSubmitted = true;
     if (!this.token)           { this.resetError = 'Please paste the reset token.'; return; }
     if (!this.newPassword)     { this.resetError = 'New password is required.'; return; }
     if (this.newPassword.length < 8) { this.resetError = 'Password must be at least 8 characters.'; return; }

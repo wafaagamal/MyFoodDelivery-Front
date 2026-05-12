@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { RestaurantService } from '../../services/restaurant.service';
 
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -16,6 +17,7 @@ export class RestaurantSettingsComponent implements OnInit {
   loading = false;
   saving = false;
   saveSuccess = false;
+  submitted = false;
   private restaurantId = '';
 
   store = {
@@ -49,7 +51,9 @@ export class RestaurantSettingsComponent implements OnInit {
     emailReports: false
   };
 
-  constructor(private restaurantService: RestaurantService) {}
+  constructor(private restaurantService: RestaurantService, private router: Router) {}
+
+  goBack(): void { this.router.navigate(['/restaurant/dashboard']); }
 
   ngOnInit(): void {
     this.loading = true;
@@ -94,6 +98,8 @@ export class RestaurantSettingsComponent implements OnInit {
   }
 
   saveSettings(): void {
+    this.submitted = true;
+    if (!this.store.name.trim() || !this.store.phone.trim()) return;
     if (!this.restaurantId) return;
     this.saving = true;
     this.saveSuccess = false;

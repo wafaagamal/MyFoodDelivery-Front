@@ -10,6 +10,30 @@
   margin: 0 0 2rem 0;
 }
 
+.settings-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  h1 { font-size: 1.75rem; font-weight: 600; color: #1a237e; margin: 0; }
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: #f0f0f0;
+  color: #1a237e;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+  &:hover { background: #e0e0e0; }
+}
+
 .settings-card {
   background: #fff;
   border-radius: 12px;
@@ -59,6 +83,16 @@
 .form-group textarea:focus {
   outline: none;
   border-color: #1a237e;
+}
+
+.field-error-msg {
+  font-size: 12px;
+  color: #c62828;
+  margin-top: 4px;
+}
+
+input.field-error {
+  border-color: #c62828 !important;
 }
 
 .input-with-prefix,

@@ -17,6 +17,22 @@
   margin: 0;
 }
 
+.back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: #f0f0f0;
+  color: #1a237e;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+  &:hover { background: #e0e0e0; }
+}
+
 .btn-add {
   display: flex;
   align-items: center;
@@ -278,6 +294,17 @@
 .form-group textarea:focus {
   outline: none;
   border-color: #1a237e;
+}
+
+.field-error-msg {
+  font-size: 12px;
+  color: #c62828;
+  margin-top: 4px;
+}
+
+input.field-error,
+select.field-error {
+  border-color: #c62828 !important;
 }
 
 .checkbox-group {

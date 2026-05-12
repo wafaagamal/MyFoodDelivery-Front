@@ -161,7 +161,14 @@
     font-size: 15px;
     background: #fff;
     &:focus { outline: none; border-color: #1565c0; box-shadow: 0 0 0 3px rgba(21,101,192,.15); }
+    &.field-error { border-color: #c62828 !important; }
   }
+}
+
+.field-error-msg {
+  font-size: 12px;
+  color: #c62828;
+  margin-top: 2px;
 }
 
 .checkbox-group label {
