@@ -284,7 +284,8 @@
 
 @media (min-width: 768px) {
   .layout-container {
-    flex-direction: row;
+    flex-direction: column;
+    margin-left: 80px;
   }
   
   .mobile-header {
@@ -306,11 +307,11 @@
   }
   
   .main-content {
-    margin-left: 80px;
+    margin-left: 0;
     padding-bottom: 1rem;
   }
   
   .stats-bar {
-    margin-left: calc(80px + 1rem);
+    margin-left: 1rem;
   }
 }

@@ -23,7 +23,7 @@
     <!-- Order Info -->
     <div class="section order-info">
       <div class="order-header">
-        <span class="order-id">Order #{{ delivery.orderId }}</span>
+        <span class="order-id">Order #{{ formatOrderId(delivery.orderId) }}</span>
         <span class="order-date">{{ delivery.date }}</span>
       </div>
       <div class="restaurant-row">

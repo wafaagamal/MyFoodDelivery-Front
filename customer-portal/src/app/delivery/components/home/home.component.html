@@ -87,7 +87,7 @@
     <h2>Current Delivery</h2>
     <div class="active-delivery-card">
       <div class="order-info">
-        <span class="order-id">Order #{{ currentDelivery.orderId }}</span>
+        <span class="order-id">Order #{{ formatOrderId(currentDelivery.orderId) }}</span>
         <span class="status">{{ currentDelivery.status }}</span>
       </div>
       

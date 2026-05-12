@@ -20,7 +20,8 @@ export class DeliveryLayoutComponent implements OnInit {
   activeDelivery = false;
   riderName = '';
   riderId = '';
-  riderPhoto = 'https://via.placeholder.com/60';
+  private rawRiderId = '';
+  riderPhoto = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Ccircle cx='30' cy='20' r='12' fill='%23fff'/%3E%3Cellipse cx='30' cy='50' rx='20' ry='12' fill='%23fff'/%3E%3C/svg%3E`;
 
   constructor(
     private authService: AuthService,
@@ -32,6 +33,7 @@ export class DeliveryLayoutComponent implements OnInit {
     this.riderName = this.authService.getDisplayName();
     this.deliveryService.getMyRider().subscribe(rider => {
       if (rider) {
+        this.rawRiderId = rider.id;
         this.riderId = 'RD-' + rider.id.replace(/-/g, '').substring(0, 8).toUpperCase();
         this.isOnline = rider.isOnline;
         this.todayDeliveries = rider.totalDeliveries;
@@ -42,7 +44,15 @@ export class DeliveryLayoutComponent implements OnInit {
   }
 
   toggleOnlineStatus(): void {
-    this.isOnline = !this.isOnline;
+    const newStatus = !this.isOnline;
+    if (this.rawRiderId) {
+      this.deliveryService.updateStatus(this.rawRiderId, newStatus).subscribe({
+        next: () => { this.isOnline = newStatus; },
+        error: () => {} // keep current state on error
+      });
+    } else {
+      this.isOnline = newStatus;
+    }
   }
 
   toggleMenu(): void {

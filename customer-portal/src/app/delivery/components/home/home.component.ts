@@ -131,5 +131,9 @@ export class DeliveryHomeComponent implements OnInit {
       }
     });
   }
+
+  formatOrderId(orderId: string): string {
+    return orderId?.replace(/-/g, '').substring(0, 8).toUpperCase() ?? '';
+  }
 }
 
