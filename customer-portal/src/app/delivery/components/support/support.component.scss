@@ -1,0 +1,101 @@
+.support-page { padding: 0 0 100px; }
+
+.page-header {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem; background: #1a1a2e; position: sticky; top: 0; z-index: 10;
+  h1 { flex: 1; margin: 0; font-size: 1.1rem; color: #fff; }
+}
+
+.back-btn, .new-btn {
+  background: rgba(255,255,255,0.1); border: none; color: #fff;
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 0.9rem;
+  &:hover { background: rgba(255,255,255,0.2); }
+}
+
+.new-btn { background: rgba(78,204,163,0.2); color: #4ecca3; }
+
+.quick-contact {
+  display: flex; gap: 0.75rem; padding: 1rem;
+}
+
+.contact-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  background: #2a2a3a; border-radius: 12px; padding: 1rem 0.5rem;
+  text-decoration: none; color: #fff; font-size: 0.8rem;
+  .fas { font-size: 1.3rem; color: #4ecca3; }
+  &:hover { background: #333345; }
+}
+
+.section-label {
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: #9999aa; padding: 0.5rem 1rem 0.25rem;
+}
+
+.card {
+  background: #2a2a3a; border-radius: 12px; margin: 0 1rem 1rem; overflow: hidden;
+}
+
+.card-title {
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: #4ecca3; padding: 0.75rem 1rem 0.5rem;
+}
+
+.ticket-item {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.85rem 1rem; border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.ticket-info {
+  flex: 1; display: flex; flex-direction: column; gap: 2px;
+  .ticket-id { font-size: 0.75rem; color: #4ecca3; }
+  .ticket-subject { font-size: 0.9rem; color: #fff; }
+  .ticket-date { font-size: 0.75rem; color: #9999aa; }
+}
+
+.ticket-status {
+  font-size: 0.75rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 20px;
+  &.open { background: rgba(245,166,35,0.15); color: #f5a623; }
+  &.resolved { background: rgba(78,204,163,0.15); color: #4ecca3; }
+}
+
+.empty-tickets {
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  padding: 2rem 1rem; color: #666680;
+  .fas { font-size: 1.5rem; }
+}
+
+.faq-item {
+  padding: 0.85rem 1rem; border-top: 1px solid rgba(255,255,255,0.05); cursor: pointer;
+  &:hover { background: rgba(255,255,255,0.03); }
+}
+
+.faq-q {
+  display: flex; justify-content: space-between; align-items: center;
+  color: #fff; font-size: 0.9rem;
+  .fas { color: #9999aa; font-size: 0.8rem; }
+}
+
+.faq-a { margin-top: 0.6rem; color: #9999aa; font-size: 0.85rem; line-height: 1.5; }
+
+.form-group {
+  padding: 0.5rem 1rem; border-top: 1px solid rgba(255,255,255,0.05);
+  label { display: block; font-size: 0.75rem; color: #9999aa; margin-bottom: 0.3rem; }
+}
+
+.form-control {
+  width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px; padding: 0.6rem 0.75rem; color: #fff; font-size: 0.9rem;
+  box-sizing: border-box; resize: none;
+  &:focus { outline: none; border-color: #4ecca3; }
+}
+
+.actions { display: flex; gap: 0.75rem; padding: 0.75rem 1rem 1rem; }
+
+.btn-primary, .btn-secondary {
+  flex: 1; padding: 0.75rem; border-radius: 10px; border: none;
+  font-size: 0.9rem; font-weight: 600; cursor: pointer;
+}
+.btn-primary { background: #4ecca3; color: #1a1a2e; &:disabled { opacity: 0.6; cursor: not-allowed; } }
+.btn-secondary { background: rgba(255,255,255,0.1); color: #fff; }

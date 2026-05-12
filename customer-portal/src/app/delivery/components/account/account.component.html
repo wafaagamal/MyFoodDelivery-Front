@@ -1,0 +1,87 @@
+<div class="account-page">
+  <div class="page-header">
+    <button class="back-btn" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <h1>Account Settings</h1>
+    <button class="edit-btn" (click)="toggleEdit()" *ngIf="!editing">
+      <i class="fas fa-pencil-alt"></i>
+    </button>
+  </div>
+
+  <div class="avatar-section">
+    <div class="avatar-circle">
+      {{ profile.firstName ? profile.firstName[0] : '?' }}
+    </div>
+    <span class="avatar-label">{{ profile.firstName }} {{ profile.lastName }}</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Personal Information</div>
+    <div class="field-row" *ngIf="!editing">
+      <i class="fas fa-user field-icon"></i>
+      <div class="field-content">
+        <span class="field-label">Full Name</span>
+        <span class="field-value">{{ profile.firstName }} {{ profile.lastName }}</span>
+      </div>
+    </div>
+    <ng-container *ngIf="editing">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" [(ngModel)]="profile.firstName" class="form-control" placeholder="First name">
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" [(ngModel)]="profile.lastName" class="form-control" placeholder="Last name">
+      </div>
+    </ng-container>
+
+    <div class="field-row">
+      <i class="fas fa-envelope field-icon"></i>
+      <div class="field-content">
+        <span class="field-label">Email</span>
+        <span class="field-value">{{ profile.email }}</span>
+      </div>
+    </div>
+
+    <div class="field-row" *ngIf="!editing">
+      <i class="fas fa-phone field-icon"></i>
+      <div class="field-content">
+        <span class="field-label">Phone</span>
+        <span class="field-value">{{ profile.phone || 'Not set' }}</span>
+      </div>
+    </div>
+    <div class="form-group" *ngIf="editing">
+      <label>Phone</label>
+      <input type="tel" [(ngModel)]="profile.phone" class="form-control" placeholder="+1 234 567 8900">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Security</div>
+    <div class="field-row clickable">
+      <i class="fas fa-lock field-icon"></i>
+      <div class="field-content">
+        <span class="field-label">Change Password</span>
+        <span class="field-value muted">••••••••</span>
+      </div>
+      <i class="fas fa-chevron-right"></i>
+    </div>
+    <div class="field-row clickable">
+      <i class="fas fa-shield-alt field-icon"></i>
+      <div class="field-content">
+        <span class="field-label">Two-Factor Authentication</span>
+        <span class="field-value muted">Disabled</span>
+      </div>
+      <i class="fas fa-chevron-right"></i>
+    </div>
+  </div>
+
+  <div class="actions" *ngIf="editing">
+    <button class="btn-secondary" (click)="toggleEdit()">Cancel</button>
+    <button class="btn-primary" (click)="save()" [disabled]="saving">
+      <span *ngIf="!saving">Save Changes</span>
+      <span *ngIf="saving"><i class="fas fa-spinner fa-spin"></i> Saving...</span>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,60 @@
+<div class="history-page">
+  <div class="page-header">
+    <button class="back-btn" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <h1>Delivery History</h1>
+  </div>
+
+  <!-- Summary Banner -->
+  <div class="summary-bar">
+    <div class="summary-item">
+      <span class="summary-value">{{ totalDeliveries }}</span>
+      <span class="summary-label">Completed</span>
+    </div>
+    <div class="divider"></div>
+    <div class="summary-item">
+      <span class="summary-value">${{ totalEarnings | number:'1.2-2' }}</span>
+      <span class="summary-label">Total Earned</span>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-state" *ngIf="loading">
+    <i class="fas fa-spinner fa-spin"></i> Loading history...
+  </div>
+
+  <!-- Empty -->
+  <div class="empty-state" *ngIf="!loading && deliveries.length === 0">
+    <i class="fas fa-history"></i>
+    <p>No deliveries yet</p>
+    <span>Your completed deliveries will appear here</span>
+  </div>
+
+  <!-- Delivery List -->
+  <div class="delivery-list" *ngIf="!loading && deliveries.length > 0">
+    <a class="delivery-card" *ngFor="let d of deliveries"
+       [routerLink]="['/delivery/deliveries', d.id]">
+      <div class="card-left">
+        <div class="order-icon">
+          <i class="fas fa-box"></i>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="order-id">{{ formatOrderId(d.id) }}</span>
+          <span class="status-badge" [ngClass]="statusLabel(d.status).toLowerCase().replace(' ', '-')">
+            {{ statusLabel(d.status) }}
+          </span>
+        </div>
+        <span class="restaurant">{{ d.restaurantName }}</span>
+        <span class="address">{{ d.dropoffAddress }}</span>
+        <div class="card-bottom">
+          <span class="date">{{ formatDate(d.createdAt) }}</span>
+          <span class="earning">${{ ((d.earning || 0) + (d.tip || 0)) | number:'1.2-2' }}</span>
+        </div>
+      </div>
+      <i class="fas fa-chevron-right card-arrow"></i>
+    </a>
+  </div>
+</div>

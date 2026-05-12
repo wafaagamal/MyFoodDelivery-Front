@@ -1,0 +1,78 @@
+<div class="support-page">
+  <div class="page-header">
+    <button class="back-btn" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <h1>Support</h1>
+    <button class="new-btn" (click)="showNewTicketForm = !showNewTicketForm">
+      <i class="fas fa-plus"></i>
+    </button>
+  </div>
+
+  <!-- New Ticket Form -->
+  <div class="card" *ngIf="showNewTicketForm">
+    <div class="card-title">New Support Ticket</div>
+    <div class="form-group">
+      <label>Subject</label>
+      <input type="text" [(ngModel)]="newTicket.subject" class="form-control" placeholder="Brief description of your issue">
+    </div>
+    <div class="form-group">
+      <label>Message</label>
+      <textarea [(ngModel)]="newTicket.message" class="form-control" rows="4" placeholder="Describe the issue in detail..."></textarea>
+    </div>
+    <div class="actions">
+      <button class="btn-secondary" (click)="showNewTicketForm = false">Cancel</button>
+      <button class="btn-primary" (click)="submitTicket()" [disabled]="submitting">
+        <span *ngIf="!submitting">Submit Ticket</span>
+        <span *ngIf="submitting"><i class="fas fa-spinner fa-spin"></i> Submitting...</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Quick Contact -->
+  <div class="quick-contact">
+    <a class="contact-item" href="tel:+1800000000">
+      <i class="fas fa-phone"></i>
+      <span>Call Support</span>
+    </a>
+    <a class="contact-item" href="mailto:riders@myfooddelivery.com">
+      <i class="fas fa-envelope"></i>
+      <span>Email Us</span>
+    </a>
+    <a class="contact-item" href="#">
+      <i class="fas fa-comment"></i>
+      <span>Live Chat</span>
+    </a>
+  </div>
+
+  <!-- My Tickets -->
+  <div class="section-label">My Tickets</div>
+  <div class="card">
+    <div class="ticket-item" *ngFor="let ticket of tickets">
+      <div class="ticket-info">
+        <span class="ticket-id">{{ ticket.id }}</span>
+        <span class="ticket-subject">{{ ticket.subject }}</span>
+        <span class="ticket-date">{{ ticket.date }}</span>
+      </div>
+      <span class="ticket-status" [ngClass]="ticket.status">
+        {{ ticket.status === 'open' ? 'Open' : 'Resolved' }}
+      </span>
+    </div>
+    <div class="empty-tickets" *ngIf="tickets.length === 0">
+      <i class="fas fa-ticket-alt"></i>
+      <span>No support tickets yet</span>
+    </div>
+  </div>
+
+  <!-- FAQs -->
+  <div class="section-label">Frequently Asked Questions</div>
+  <div class="card">
+    <div class="faq-item" *ngFor="let faq of faqs" (click)="toggleFaq(faq)">
+      <div class="faq-q">
+        <span>{{ faq.q }}</span>
+        <i class="fas" [class.fa-chevron-down]="!faq.open" [class.fa-chevron-up]="faq.open"></i>
+      </div>
+      <div class="faq-a" *ngIf="faq.open">{{ faq.a }}</div>
+    </div>
+  </div>
+</div>

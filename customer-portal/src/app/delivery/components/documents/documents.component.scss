@@ -1,0 +1,62 @@
+.documents-page { padding: 0 0 100px; }
+
+.page-header {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem; background: #1a1a2e; position: sticky; top: 0; z-index: 10;
+  h1 { flex: 1; margin: 0; font-size: 1.1rem; color: #fff; }
+}
+
+.back-btn {
+  background: rgba(255,255,255,0.1); border: none; color: #fff;
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 0.9rem;
+  &:hover { background: rgba(255,255,255,0.2); }
+}
+
+.info-banner {
+  display: flex; align-items: center; gap: 0.6rem;
+  background: rgba(78,204,163,0.1); border-left: 3px solid #4ecca3;
+  color: #aaa; font-size: 0.85rem; padding: 0.75rem 1rem; margin: 1rem;
+  border-radius: 0 8px 8px 0;
+  .fas { color: #4ecca3; }
+}
+
+.doc-list { padding: 0 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+
+.doc-card {
+  background: #2a2a3a; border-radius: 12px; padding: 1rem;
+  display: flex; align-items: center; gap: 1rem;
+  border-left: 3px solid transparent;
+  &.status-verified { border-left-color: #4ecca3; }
+  &.status-pending { border-left-color: #f5a623; }
+  &.status-expired, &.status-missing { border-left-color: #ff6b6b; }
+}
+
+.doc-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: rgba(78,204,163,0.12); display: flex; align-items: center; justify-content: center;
+  .fas { font-size: 1.2rem; color: #4ecca3; }
+}
+
+.doc-info {
+  flex: 1;
+  .doc-name { display: block; color: #fff; font-size: 0.95rem; font-weight: 500; }
+  .doc-expiry { font-size: 0.78rem; color: #9999aa; margin-top: 2px; display: block; }
+}
+
+.doc-status { display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem; }
+
+.status-badge {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  font-size: 0.75rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 20px;
+  &.badge-verified { background: rgba(78,204,163,0.15); color: #4ecca3; }
+  &.badge-pending { background: rgba(245,166,35,0.15); color: #f5a623; }
+  &.badge-expired, &.badge-missing { background: rgba(255,107,107,0.15); color: #ff6b6b; }
+}
+
+.upload-btn {
+  background: rgba(255,255,255,0.1); border: none; color: #fff;
+  padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer;
+  &:hover { background: rgba(255,255,255,0.2); }
+}

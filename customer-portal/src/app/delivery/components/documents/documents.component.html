@@ -1,0 +1,38 @@
+<div class="documents-page">
+  <div class="page-header">
+    <button class="back-btn" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <h1>Documents</h1>
+  </div>
+
+  <div class="info-banner">
+    <i class="fas fa-info-circle"></i>
+    Keep your documents up to date to continue delivering.
+  </div>
+
+  <div class="doc-list">
+    <div class="doc-card" *ngFor="let doc of documents" [ngClass]="'status-' + doc.status">
+      <div class="doc-icon">
+        <i class="fas" [ngClass]="doc.icon"></i>
+      </div>
+      <div class="doc-info">
+        <span class="doc-name">{{ doc.name }}</span>
+        <span class="doc-expiry" *ngIf="doc.expiryDate">Expires: {{ doc.expiryDate }}</span>
+      </div>
+      <div class="doc-status">
+        <span class="status-badge" [ngClass]="'badge-' + doc.status">
+          <i class="fas"
+             [class.fa-check-circle]="doc.status === 'verified'"
+             [class.fa-clock]="doc.status === 'pending'"
+             [class.fa-exclamation-circle]="doc.status === 'expired' || doc.status === 'missing'"></i>
+          {{ getStatusLabel(doc.status) }}
+        </span>
+        <button class="upload-btn" (click)="uploadDocument(doc)"
+                *ngIf="doc.status !== 'verified'">
+          <i class="fas fa-upload"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

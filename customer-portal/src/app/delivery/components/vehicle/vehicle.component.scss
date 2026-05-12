@@ -1,0 +1,71 @@
+.vehicle-page { padding: 0 0 100px; }
+
+.page-header {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem; background: #1a1a2e;
+  position: sticky; top: 0; z-index: 10;
+  h1 { flex: 1; margin: 0; font-size: 1.1rem; color: #fff; }
+}
+
+.back-btn, .edit-btn {
+  background: rgba(255,255,255,0.1); border: none; color: #fff;
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 0.9rem;
+  &:hover { background: rgba(255,255,255,0.2); }
+}
+
+.vehicle-hero {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 2rem 1rem 1.5rem;
+  background: linear-gradient(180deg, #1a1a2e 0%, #2a2a3a 100%);
+  .fas { font-size: 3rem; color: #4ecca3; margin-bottom: 0.75rem; }
+}
+
+.vehicle-label { color: #fff; font-size: 1.1rem; font-weight: 600; }
+.vehicle-plate {
+  margin-top: 0.4rem; background: rgba(78,204,163,0.15);
+  border: 1px solid #4ecca3; color: #4ecca3;
+  padding: 0.2rem 0.75rem; border-radius: 6px; font-size: 0.85rem; letter-spacing: 0.08em;
+}
+
+.card {
+  background: #2a2a3a; border-radius: 12px; margin: 1rem; overflow: hidden;
+}
+
+.card-title {
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: #4ecca3; padding: 0.75rem 1rem 0.5rem;
+}
+
+.detail-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.75rem 1rem; border-top: 1px solid rgba(255,255,255,0.05);
+  .label { font-size: 0.85rem; color: #9999aa; }
+  .value { font-size: 0.9rem; color: #fff; &.expired { color: #ff6b6b; } }
+}
+
+.form-group {
+  padding: 0.5rem 1rem; border-top: 1px solid rgba(255,255,255,0.05);
+  label { display: block; font-size: 0.75rem; color: #9999aa; margin-bottom: 0.3rem; }
+}
+
+.form-row { display: flex; gap: 0; .form-group { flex: 1; } }
+
+.form-control {
+  width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px; padding: 0.6rem 0.75rem; color: #fff; font-size: 0.9rem;
+  box-sizing: border-box;
+  &:focus { outline: none; border-color: #4ecca3; }
+}
+
+select.form-control option { background: #2a2a3a; }
+
+.actions { display: flex; gap: 0.75rem; padding: 1rem; }
+
+.btn-primary, .btn-secondary {
+  flex: 1; padding: 0.75rem; border-radius: 10px; border: none;
+  font-size: 0.9rem; font-weight: 600; cursor: pointer;
+}
+.btn-primary { background: #4ecca3; color: #1a1a2e; &:disabled { opacity: 0.6; cursor: not-allowed; } }
+.btn-secondary { background: rgba(255,255,255,0.1); color: #fff; }

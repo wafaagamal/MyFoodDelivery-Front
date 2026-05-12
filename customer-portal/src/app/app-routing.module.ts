@@ -156,6 +156,31 @@ export const routes: Routes = [
         path: 'profile',
         loadComponent: () => import('./delivery/components/profile/profile.component')
           .then(m => m.DeliveryProfileComponent)
+      },
+      {
+        path: 'account',
+        loadComponent: () => import('./delivery/components/account/account.component')
+          .then(m => m.DeliveryAccountComponent)
+      },
+      {
+        path: 'vehicle',
+        loadComponent: () => import('./delivery/components/vehicle/vehicle.component')
+          .then(m => m.DeliveryVehicleComponent)
+      },
+      {
+        path: 'documents',
+        loadComponent: () => import('./delivery/components/documents/documents.component')
+          .then(m => m.DeliveryDocumentsComponent)
+      },
+      {
+        path: 'support',
+        loadComponent: () => import('./delivery/components/support/support.component')
+          .then(m => m.DeliverySupportComponent)
+      },
+      {
+        path: 'history',
+        loadComponent: () => import('./delivery/components/history/history.component')
+          .then(m => m.DeliveryHistoryComponent)
       }
     ]
   },
