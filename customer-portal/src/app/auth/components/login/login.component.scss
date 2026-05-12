@@ -178,6 +178,28 @@
   text-decoration: none;
 }
 
+.form-group input.field-error {
+  border-color: #f44336 !important;
+}
+
+.password-wrapper.field-error {
+  border-color: #f44336 !important;
+}
+
+.field-error-msg {
+  font-size: 0.78rem;
+  color: #f44336;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  &::before {
+    content: '⚠';
+    font-size: 0.75rem;
+  }
+}
+
 .error-message {
   padding: 12px;
   background: rgba(244,67,54,0.2);

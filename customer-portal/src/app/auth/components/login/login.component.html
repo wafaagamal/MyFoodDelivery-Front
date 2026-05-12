@@ -5,7 +5,7 @@
     <p>{{ i18n['subtitle'] || 'Sign in to continue' }}</p>
   </div>
 
-  <form (ngSubmit)="onSubmit()" class="login-form">
+  <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="login-form" novalidate>
     <!-- Role Selection -->
     <div class="role-selector">
       <label>{{ i18n['loginAs'] || 'Login as' }}</label>
@@ -23,30 +23,43 @@
 
     <div class="form-group">
       <label for="email">{{ i18n['emailLabel'] || 'Email' }}</label>
-      <input 
-        type="email" 
-        id="email" 
-        [(ngModel)]="email" 
+      <input
+        type="email"
+        id="email"
+        [(ngModel)]="email"
         name="email"
+        #emailField="ngModel"
         [placeholder]="i18n['emailPlaceholder'] || 'Enter your email'"
-        required>
+        [class.field-error]="emailField.invalid && (emailField.touched || submitted)"
+        required
+        email>
+      <div class="field-error-msg" *ngIf="emailField.invalid && (emailField.touched || submitted)">
+        <span *ngIf="emailField.errors?.['required']">Email is required</span>
+        <span *ngIf="emailField.errors?.['email']">Please enter a valid email address</span>
+      </div>
     </div>
 
     <div class="form-group">
       <label for="password">{{ i18n['passwordLabel'] || 'Password' }}</label>
-      <div class="password-wrapper">
-        <input 
-          [type]="showPassword ? 'text' : 'password'" 
-          id="password" 
-          [(ngModel)]="password" 
+      <div class="password-wrapper" [class.field-error]="passwordField.invalid && (passwordField.touched || submitted)">
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          id="password"
+          [(ngModel)]="password"
           name="password"
+          #passwordField="ngModel"
           autocomplete="current-password"
           [placeholder]="i18n['passwordPlaceholder'] || 'Enter your password'"
-          required>
+          required
+          minlength="6">
         <button type="button" class="eye-btn" (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
           <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
           <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
         </button>
+      </div>
+      <div class="field-error-msg" *ngIf="passwordField.invalid && (passwordField.touched || submitted)">
+        <span *ngIf="passwordField.errors?.['required']">Password is required</span>
+        <span *ngIf="passwordField.errors?.['minlength']">Password must be at least 6 characters</span>
       </div>
     </div>
 

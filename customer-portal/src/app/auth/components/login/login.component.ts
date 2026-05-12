@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService, UserRole } from '../../services/auth.service';
 import { LocalizationService } from '../../../shared/services/localization.service';
@@ -19,6 +19,9 @@ export class LoginComponent implements OnInit {
   isLoading = false;
   error = '';
   showPassword = false;
+  submitted = false;
+
+  @ViewChild('loginForm') loginForm!: NgForm;
 
   // Localized strings
   i18n: Record<string, string> = {};
@@ -73,8 +76,14 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.submitted = true;
     if (!this.email || !this.password) {
-      this.error = this.localization.get<string>('auth.errors.emailRequired') ?? 'Please enter email and password';
+      return;
+    }
+
+    // Basic email format check before hitting the API
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(this.email)) {
       return;
     }
 
