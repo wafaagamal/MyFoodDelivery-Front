@@ -83,7 +83,15 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(this.email, this.password, this.selectedRole).subscribe({
       next: () => {
-        // Navigate to the appropriate portal based on role
+        const actualRole = this.authService.getUserRole();
+        // Allow Admin to log in from any tab
+        if (actualRole && actualRole !== UserRole.Admin && actualRole !== this.selectedRole) {
+          this.authService.logout();
+          const actualLabel = this.roles.find(r => r.value === actualRole)?.label ?? actualRole;
+          this.error = `This account is registered as "${actualLabel}". Please select the correct login tab.`;
+          this.isLoading = false;
+          return;
+        }
         this.authService.navigateToRolePortal();
       },
       error: (err: Error) => {
